@@ -367,12 +367,13 @@
   }
   ids.forEach(id => $("s-" + id).addEventListener("input", render));
   $("reset").addEventListener("click", () => { ids.forEach(id => $("s-" + id).value = 0); render(); });
-  $("copy").addEventListener("click", () => {
-    const t = $("mail").textContent, b = $("copy");
-    const done = () => { b.textContent = "Adresse copiée"; setTimeout(() => b.textContent = "Copier l'adresse", 2000); };
-    const fallback = () => { const s = getSelection(), rg = document.createRange(); rg.selectNodeContents($("mail")); s.removeAllRanges(); s.addRange(rg); b.textContent = "Adresse sélectionnée"; };
+  const copier = (btnId, srcId, label, doneLabel, selLabel) => $(btnId).addEventListener("click", () => {
+    const t = $(srcId).textContent, b = $(btnId);
+    const done = () => { b.textContent = doneLabel; setTimeout(() => b.textContent = label, 2000); };
+    const fallback = () => { const s = getSelection(), rg = document.createRange(); rg.selectNodeContents($(srcId)); s.removeAllRanges(); s.addRange(rg); b.textContent = selLabel; };
     try { navigator.clipboard.writeText(t).then(done, fallback); } catch (e) { fallback(); }
   });
+  copier("copy", "mail", "Copier l'adresse", "Adresse copiée", "Adresse sélectionnée");
   render();
 })();
 </script>

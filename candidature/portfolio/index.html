@@ -114,11 +114,15 @@
   .chips span { font: 400 13px var(--mono); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; background: var(--surface); }
   .skills p { font-size: 14px; color: var(--muted); margin-top: 8px; }
 
-  .horse { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-  @media (max-width: 680px) { .horse { grid-template-columns: minmax(0, 1fr); } }
+  .horse { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 32px; align-items: center; }
+  @media (max-width: 720px) { .horse { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
   .horse h2 { color: var(--leather); }
-  .traits { display: flex; flex-wrap: wrap; gap: 8px; }
-  .traits span { border: 1px solid var(--leather); color: var(--leather); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+  .photo { margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+  .photo img { display: block; width: 100%; height: auto; max-width: 100%; }
+  @media (max-width: 720px) { .photo { max-width: 420px; } }
+  .story { display: grid; gap: 14px; min-width: 0; max-width: 60ch; }
+  .story .pull { border-left: 3px solid var(--leather); padding-left: 14px; }
+  .story .pull strong { color: var(--leather); font-weight: 600; }
 
   .contact { display: grid; gap: 10px; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
@@ -279,14 +283,16 @@
 
   <section aria-labelledby="hr">
     <div class="horse">
-      <div style="display:grid;gap:14px;min-width:0">
+      <figure class="photo">
+        <img src="limonchello.jpg" width="900" height="1019" alt="Polina, souriante, penchée depuis la selle sur l'encolure de Limonchello, un cheval alezan, dans un manège" loading="lazy">
+      </figure>
+      <div class="story">
         <div class="label">Hors du bureau</div>
-        <h2 id="hr">Limonchello et moi</h2>
-        <p>Je monte depuis l'adolescence : saut d'obstacles en Russie, jusqu'à 1 m, puis dressage en France avec Limonchello, mon cheval de cœur. Un cheval ne se commande pas, il se convainc. On progresse par le travail régulier, la patience et la confiance.</p>
-      </div>
-      <div style="display:grid;gap:14px;min-width:0">
-        <p class="note">Ce que l'équitation m'a appris et que j'apporte en équipe</p>
-        <div class="traits"><span>Persévérance</span><span>Patience</span><span>Confiance</span><span>Responsabilité</span><span>Adaptabilité</span><span>Communication non verbale</span></div>
+        <h2 id="hr">Limonchello et moi 🐴❤️</h2>
+        <p>Quand j'ai quitté la Russie pour construire ma vie en France, j'ai laissé derrière moi ma famille, mes amis et beaucoup de mes repères. Mais une chose ne m'a jamais quittée : ma passion pour les chevaux.</p>
+        <p>Et puis, il y a eu Limonchello. Mon cheval de cœur, devenu mon refuge, ma petite bulle de bonheur. Peu importe les difficultés de la journée, le retrouver suffit souvent à rendre le monde un peu plus léger.</p>
+        <p>Notre histoire, c'est aussi un apprentissage permanent. Il m'apprend la patience, l'écoute, la persévérance et surtout la confiance. Avec un cheval, rien n'est jamais acquis : il faut apprendre à comprendre, à s'adapter et parfois à recommencer autrement. Des leçons que j'emporte aussi dans ma vie professionnelle.</p>
+        <p class="pull"><strong>Limonchello ne le sait probablement pas, mais il m'apprend autant sur moi-même que sur l'équitation.</strong> Et il me rappelle qu'au milieu de toutes nos ambitions, il faut garder une place pour ce qui nous rend simplement heureux.</p>
         <p class="note">Aussi : ski, danse, astronomie, psychologie, Queen et Michael Jackson.</p>
       </div>
     </div>

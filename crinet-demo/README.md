@@ -1,5 +1,7 @@
 # Prototype — coût industriel d'un pneumatique
 
+[![tests](https://github.com/PolinaAgapova/Michelin/actions/workflows/tests.yml/badge.svg)](https://github.com/PolinaAgapova/Michelin/actions/workflows/tests.yml)
+
 Démonstrateur personnel, réalisé en vue de ma candidature au stage
 « Explorer l'IA générative pour moderniser une application R&D ».
 Il reproduit à petite échelle la démarche décrite dans l'offre :

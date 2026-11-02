@@ -1,5 +1,7 @@
 # Candidature — Polina Agapova
 
+[![tests](https://github.com/PolinaAgapova/Michelin/actions/workflows/tests.yml/badge.svg)](https://github.com/PolinaAgapova/Michelin/actions/workflows/tests.yml)
+
 Dossier de candidature au stage **« Explorer l'IA générative pour moderniser une application R&D »**.
 
 | Dossier | Contenu |

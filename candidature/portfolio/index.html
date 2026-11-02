@@ -1,0 +1,378 @@
+<title>Polina Agapova</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: single reading column (~68ch) with a wide "workbench" band for the live cost model;
+     timeline rows use a fixed date gutter so dates align like a lab notebook. */
+  :root {
+    --bg: #f3f5f2;
+    --surface: #ffffff;
+    --ink: #17201c;
+    --muted: #56625c;
+    --line: #d9dfda;
+    --accent: #0f6b5c;
+    --accent-soft: #e2efeb;
+    --leather: #8a5a2b;
+    --up: #b4471b;
+    --down: #1d7a45;
+    --s1: #0f6b5c; --s2: #3d8fb8; --s3: #7a64c4; --s4: #d39b14; --s5: #b4471b; --s6: #7d8a84;
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+    --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101513; --surface: #171e1b; --ink: #e6ece8; --muted: #9aa8a1; --line: #2a3430;
+      --accent: #4fc2a8; --accent-soft: #17302a; --leather: #d39a5e; --up: #f08a5d; --down: #5fd08f;
+      --s1: #4fc2a8; --s2: #6fb6dc; --s3: #a593e6; --s4: #f0c14b; --s5: #f08a5d; --s6: #9aa8a1;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101513; --surface: #171e1b; --ink: #e6ece8; --muted: #9aa8a1; --line: #2a3430;
+    --accent: #4fc2a8; --accent-soft: #17302a; --leather: #d39a5e; --up: #f08a5d; --down: #5fd08f;
+    --s1: #4fc2a8; --s2: #6fb6dc; --s3: #a593e6; --s4: #f0c14b; --s5: #f08a5d; --s6: #9aa8a1;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.6 var(--body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 48px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  .col { max-width: 68ch; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  .label { font: 500 12px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+  /* hero */
+  header { padding-block: 56px 32px; display: grid; gap: 20px; }
+  h1 { font-size: clamp(44px, 9vw, 92px); font-weight: 800; line-height: .95; letter-spacing: -0.03em; }
+  h1 span { color: var(--accent); }
+  .lede { font-size: clamp(18px, 2.4vw, 21px); line-height: 1.5; max-width: 40ch; margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 14px; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  section { padding-block: 40px; border-top: 1px solid var(--line); display: grid; gap: 18px; }
+  h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -0.015em; }
+  p { margin: 0; }
+
+  /* workbench */
+  .bench {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px; display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+  @media (max-width: 760px) { .bench { grid-template-columns: minmax(0, 1fr); padding: 16px; } }
+  .tire { font: 500 13px var(--mono); color: var(--muted); }
+  .total { font: 700 clamp(48px, 8vw, 68px)/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .total small { font: 500 15px var(--body); color: var(--muted); letter-spacing: 0; margin-left: 6px; }
+  .delta { font: 600 15px var(--mono); font-variant-numeric: tabular-nums; min-height: 1.4em; }
+  .delta.up { color: var(--up); } .delta.down { color: var(--down); } .delta.flat { color: var(--muted); }
+  .stack { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: var(--line); }
+  .stack i { display: block; height: 100%; transition: width .35s ease; }
+  .legend { display: grid; grid-template-columns: 12px 1fr auto; gap: 6px 10px; font-size: 14px; align-items: center; }
+  .legend .sw { width: 12px; height: 12px; border-radius: 3px; }
+  .legend .v { font: 400 14px var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+  .sliders { display: grid; gap: 14px; align-content: start; }
+  .sl { display: grid; grid-template-columns: minmax(0, 1fr) 58px; gap: 2px 10px; align-items: center; font-size: 14px; }
+  .sl input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+  .sl output { font: 500 13px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+  .reset { justify-self: start; font: 500 13px var(--body); color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+  .reset:hover { border-color: var(--accent); }
+  .note { font-size: 13px; color: var(--muted); }
+
+  .shot { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .shot img { display: block; width: 100%; height: auto; }
+
+  /* AI log */
+  .log { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .log div { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .log .n { grid-column: 1; grid-row: 1 / span 2; font: 500 13px var(--mono); color: var(--up); padding-top: 2px; }
+  .log b { font-weight: 600; }
+  .log span:not(.n) { color: var(--muted); font-size: 15px; grid-column: 2; }
+  .log b { grid-column: 2; }
+  .takeaway { background: var(--accent-soft); border-radius: 10px; padding: 16px 18px; font-size: 16px; }
+
+  /* timeline */
+  .tl { display: grid; gap: 22px; }
+  .tl article { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 4px 20px; }
+  @media (max-width: 560px) { .tl article { grid-template-columns: minmax(0, 1fr); } }
+  .tl time { font: 500 13px/1.7 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .tl h3 { font: 600 17px/1.35 var(--body); }
+  .tl .org { color: var(--muted); font-size: 14px; }
+  .tl ul { margin: 6px 0 0; padding-left: 18px; font-size: 15px; display: grid; gap: 3px; }
+
+  .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 22px; }
+  .skills h3 { font: 600 15px var(--body); margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font: 400 13px var(--mono); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; background: var(--surface); }
+  .skills p { font-size: 14px; color: var(--muted); margin-top: 8px; }
+
+  .horse { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 680px) { .horse { grid-template-columns: minmax(0, 1fr); } }
+  .horse h2 { color: var(--leather); }
+  .traits { display: flex; flex-wrap: wrap; gap: 8px; }
+  .traits span { border: 1px solid var(--leather); color: var(--leather); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+
+  .contact { display: grid; gap: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .addr { font: 500 16px var(--mono); user-select: all; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; min-width: 0; overflow-wrap: anywhere; }
+  .btn { font: 600 14px var(--body); background: var(--accent); color: var(--bg); border: 0; border-radius: 8px; padding: 10px 16px; cursor: pointer; text-decoration: none; }
+  .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  footer { padding-top: 32px; color: var(--muted); font-size: 13px; }
+
+  @media (prefers-reduced-motion: reduce) { .stack i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="label">Candidature · stage IA générative &amp; modernisation applicative · 2027</div>
+    <h1>Polina<br><span>Agapova</span></h1>
+    <p class="lede">Data, IT et métier. Je traduis des besoins en spécifications testables, je code pour prototyper, et je mesure ce que l'IA générative apporte vraiment.</p>
+    <div class="meta">
+      <span><b>Master 2</b> Innovation &amp; Transformation Numérique, IAE Clermont Auvergne</span>
+      <span><b>BUT</b> Science des Données</span>
+      <span><b>Clermont-Ferrand</b></span>
+    </div>
+  </header>
+
+  <section aria-labelledby="proto">
+    <div class="label">Projet personnel · Java 21 · Spring Boot · développé avec Claude Code</div>
+    <h2 id="proto">Combien coûte un pneu ?</h2>
+    <p class="col">Pour préparer ma candidature, j'ai appliqué à petite échelle la démarche décrite dans l'offre : user stories, tests, code, puis évaluation de l'IA. Le prototype calcule, simule et analyse le coût industriel d'un pneumatique. Le modèle ci-dessous reprend ses règles de calcul. Toutes les données sont fictives.</p>
+
+    <div class="bench" role="group" aria-label="Modèle de coût interactif">
+      <div style="display:grid;gap:14px;align-content:start;min-width:0">
+        <div class="tire">TC-205 · tourisme été · 205/55 R16 · rebut 2,5 %</div>
+        <div><span class="total" id="total">37,24</span><small>€ / pneu bon</small></div>
+        <div class="delta flat" id="delta">Référence</div>
+        <div class="stack" id="stack" aria-hidden="true"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="sliders">
+        <label class="sl" for="s-nr"><span>Caoutchouc naturel</span><output id="o-nr">0 %</output><input type="range" id="s-nr" min="-30" max="30" step="5" value="0"></label>
+        <label class="sl" for="s-sbr"><span>Caoutchouc synthétique</span><output id="o-sbr">0 %</output><input type="range" id="s-sbr" min="-30" max="30" step="5" value="0"></label>
+        <label class="sl" for="s-en"><span>Prix de l'énergie</span><output id="o-en">0 %</output><input type="range" id="s-en" min="-30" max="30" step="5" value="0"></label>
+        <label class="sl" for="s-lab"><span>Taux horaire main d'œuvre</span><output id="o-lab">0 %</output><input type="range" id="s-lab" min="-30" max="30" step="5" value="0"></label>
+        <button class="reset" id="reset" type="button">Revenir à la référence</button>
+        <p class="note">Rebut = coût direct × r / (1 − r). Frais de structure = 35 % de (main d'œuvre + machine).</p>
+      </div>
+    </div>
+
+    <figure class="shot" style="margin:0">
+      <img src="demo.png" alt="Écran du prototype : décomposition du coût, simulation what-if, analyse de sensibilité en tornado, nomenclature et gamme de fabrication" loading="lazy">
+    </figure>
+    <div class="row">
+      <a class="btn" href="https://github.com/polinaagapova/michelin" target="_blank" rel="noopener">Voir le code sur GitHub</a>
+      <span class="note">17 tests automatisés · 9 user stories · API REST · journal d'évaluation de l'IA</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="ia">
+    <div class="label">Journal de bord</div>
+    <h2 id="ia">Ce que l'IA a mal fait</h2>
+    <p class="col">L'IA a structuré le projet en une session. Elle a aussi commis des erreurs que les tests n'ont pas vues. Je les ai notées, parce que c'est là qu'on apprend où placer le contrôle humain.</p>
+    <div class="log col">
+      <div><span class="n">01</span><b>Données irréalistes</b><span>Le coût machine dépassait le coût matières. Repéré par un contrôle de vraisemblance des résultats, pas par les tests.</span></div>
+      <div><span class="n">02</span><b>Inducteur oublié</b><span>L'analyse de sensibilité ignorait le coût horaire machine, pourtant le poste le plus sensible.</span></div>
+      <div><span class="n">03</span><b>Libellés techniques à l'écran</b><span>« Prix SYNTHETIC_RUBBER » affiché à l'utilisateur. Repéré en revue visuelle.</span></div>
+      <div><span class="n">04</span><b>Erreur d'outillage</b><span>Une commande d'arrêt du serveur interrompait sa propre session.</span></div>
+    </div>
+    <p class="takeaway col"><b>Ce que j'en retiens :</b> l'IA accélère la structure, la valeur humaine se déplace vers la spécification, la vérification et le dialogue avec le métier. Des tests construits sur des exemples calculés à la main rendent l'IA contrôlable.</p>
+  </section>
+
+  <section aria-labelledby="xp">
+    <div class="label">Parcours</div>
+    <h2 id="xp">Expérience</h2>
+    <div class="tl">
+      <article>
+        <time>févr. – août 2026</time>
+        <div>
+          <h3>Analyste Data / Projet IT · stage</h3>
+          <div class="org">Atos, équipe Supply Chain IT, projet client Euromaster · Clermont-Ferrand</div>
+          <ul>
+            <li>Dashboard Power BI de suivi de la fiabilité des prévisions (Slim4), des données SAP à la restitution</li>
+            <li>KPI : Forecast Accuracy, biais, MAPE ; comparaison prévu / réalisé sur la France, l'Italie et la Suisse</li>
+            <li>Interface entre équipes IT, Supply Chain et métier ; détection de problèmes de qualité des données</li>
+          </ul>
+        </div>
+      </article>
+      <article>
+        <time>2024 – 2025</time>
+        <div>
+          <h3>Analyste Marketing &amp; Données produits · alternance</h3>
+          <div class="org">Mersen, groupe industriel international, Electrical Power</div>
+          <ul>
+            <li>Données techniques produits dans le PIM ARAS, classification ETIM, contrôle qualité</li>
+            <li>Automatisation des mises à jour et des fiches techniques (Excel/VBA, JSON, BMEcat)</li>
+            <li>Coordination avec les équipes États-Unis et Canada</li>
+          </ul>
+        </div>
+      </article>
+      <article>
+        <time>2024</time>
+        <div>
+          <h3>Outils d'aide à la décision · stage</h3>
+          <div class="org">Centre social et culturel L'Espelido</div>
+          <ul><li>Deux applications Python d'analyse territoriale avec cartographie</li></ul>
+        </div>
+      </article>
+      <article>
+        <time>2025</time>
+        <div>
+          <h3>Prix technique · Hackathon Sopra Steria × Laboratoires Théa</h3>
+          <div class="org">Solution connectée pour la sécurité et le secours des skieurs, en équipe</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="edu">
+    <div class="label">Formation</div>
+    <h2 id="edu">Deux cultures, data et management</h2>
+    <div class="tl">
+      <article>
+        <time>2025 – 2027</time>
+        <div>
+          <h3>Master Management stratégique, parcours Innovation &amp; Transformation Numérique</h3>
+          <div class="org">IAE Clermont Auvergne, Université Clermont Auvergne</div>
+          <ul><li>Business Analysis, SI, BI, PLM, IA et organisations. Cas PLM industriel : entretiens avec bureau d'études, méthodes et production.</li></ul>
+        </div>
+      </article>
+      <article>
+        <time>2022 – 2025</time>
+        <div>
+          <h3>BUT Science des Données</h3>
+          <div class="org">IUT d'Avignon, Avignon Université</div>
+          <ul><li>Statistiques, machine learning, bases de données, big data. Projets NLP, classification, Spark.</li></ul>
+        </div>
+      </article>
+      <article>
+        <time>2020 – 2022</time>
+        <div>
+          <h3>Études en Business-Informatique</h3>
+          <div class="org">RANEPA, Moscou. Arrivée en France en 2022 pour poursuivre mes études.</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="sk">
+    <div class="label">Outils</div>
+    <h2 id="sk">Compétences</h2>
+    <div class="skills">
+      <div><h3>IA générative</h3><div class="chips"><span>Claude Code</span><span>Claude</span><span>ChatGPT</span><span>Runway</span></div></div>
+      <div><h3>Programmation</h3><div class="chips"><span>Python</span><span>SQL</span><span>R</span><span>VBA</span><span>Git</span></div>
+        <p>Java : bases acquises en BUT, montée en compétence Spring Boot en cours avec ce prototype.</p></div>
+      <div><h3>Data &amp; BI</h3><div class="chips"><span>Power BI / DAX</span><span>Databricks</span><span>pandas</span><span>scikit-learn</span><span>Spark</span></div></div>
+      <div><h3>Systèmes d'information</h3><div class="chips"><span>SAP (données)</span><span>Slim4</span><span>ARAS PIM</span><span>PLM</span><span>NetSuite</span></div></div>
+      <div><h3>Méthodes</h3><div class="chips"><span>User stories</span><span>Gherkin</span><span>AS-IS / TO-BE</span><span>Agile</span><span>KPI</span></div></div>
+      <div><h3>Langues</h3><div class="chips"><span>Russe · natif</span><span>Français · DELF B2</span><span>Anglais · pro</span></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="hr">
+    <div class="horse">
+      <div style="display:grid;gap:14px;min-width:0">
+        <div class="label">Hors du bureau</div>
+        <h2 id="hr">Limonchello et moi</h2>
+        <p>Je monte depuis l'adolescence : saut d'obstacles en Russie, jusqu'à 1 m, puis dressage en France avec Limonchello, mon cheval de cœur. Un cheval ne se commande pas, il se convainc. On progresse par le travail régulier, la patience et la confiance.</p>
+      </div>
+      <div style="display:grid;gap:14px;min-width:0">
+        <p class="note">Ce que l'équitation m'a appris et que j'apporte en équipe</p>
+        <div class="traits"><span>Persévérance</span><span>Patience</span><span>Confiance</span><span>Responsabilité</span><span>Adaptabilité</span><span>Communication non verbale</span></div>
+        <p class="note">Aussi : ski, danse, astronomie, philosophie, Queen et Michael Jackson.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="ct">
+    <div class="label">Contact</div>
+    <h2 id="ct">Échangeons</h2>
+    <div class="contact">
+      <div class="row">
+        <span class="addr" id="mail">agapovapolina2002@gmail.com</span>
+        <button class="btn ghost" id="copy" type="button">Copier l'adresse</button>
+      </div>
+      <div class="row">
+        <a class="btn" href="https://www.linkedin.com/in/polina-agapova" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn ghost" href="https://github.com/polinaagapova/michelin" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>Portfolio personnel. Le prototype est un projet indépendant, sans lien avec une entreprise, réalisé avec l'assistance de Claude Code ; ses données sont fictives.</footer>
+</div>
+
+<script>
+(() => {
+  // Same rules and fictional data as SampleCatalog / CostCalculator in the Java prototype (tire TC-205).
+  const BOM = [
+    ["nr", 1.90, 1.75], ["sbr", 2.30, 2.10], ["filler", 1.70, 1.30], ["filler", 0.90, 1.60],
+    ["steel", 1.20, 1.95], ["textile", 0.45, 4.20], ["chem", 0.35, 3.50]];
+  // name, cycle min, machine €/h, labor €/h, operators, kWh
+  const STEPS = [[0.8, 60, 38, 0.5, 2.4], [1.2, 50, 38, 1, 1.6], [2.5, 40, 38, 1, 0.9], [11, 25, 38, 0.2, 3.8], [1.0, 20, 38, 1, 0.2]];
+  const ENERGY = 0.18, OVERHEAD = 0.35, SCRAP = 0.025;
+  const PARTS = [["materials", "Matières", "--s1"], ["labor", "Main d'œuvre", "--s2"], ["machine", "Machine", "--s3"],
+    ["energy", "Énergie", "--s4"], ["scrap", "Rebut", "--s5"], ["overhead", "Frais de structure", "--s6"]];
+  const r2 = v => Math.round(v * 100) / 100;
+  const fmt = v => v.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const $ = id => document.getElementById(id);
+  const ids = ["nr", "sbr", "en", "lab"];
+
+  function cost(c) {
+    let materials = 0, labor = 0, machine = 0, energy = 0;
+    for (const [cat, kg, p] of BOM) materials += kg * p * (1 + (cat === "nr" ? c.nr : cat === "sbr" ? c.sbr : 0));
+    for (const [min, mach, lab, ops, kwh] of STEPS) {
+      const h = min / 60;
+      labor += h * lab * (1 + c.lab) * ops; machine += h * mach; energy += kwh * ENERGY * (1 + c.en);
+    }
+    const direct = materials + labor + machine + energy;
+    const scrap = direct * SCRAP / (1 - SCRAP);
+    const overhead = (labor + machine) * OVERHEAD;
+    return { materials, labor, machine, energy, scrap, overhead, total: direct + scrap + overhead };
+  }
+
+  const base = cost({ nr: 0, sbr: 0, en: 0, lab: 0 });
+  $("legend").innerHTML = PARTS.map(([k, l, c]) =>
+    `<span class="sw" style="background:var(${c})"></span><span>${l}</span><span class="v" id="v-${k}"></span>`).join("");
+  $("stack").innerHTML = PARTS.map(([k, , c]) => `<i id="b-${k}" style="background:var(${c})"></i>`).join("");
+
+  function render() {
+    const c = {};
+    ids.forEach(id => {
+      const v = Number($("s-" + id).value);
+      c[id] = v / 100;
+      $("o-" + id).textContent = (v > 0 ? "+" : "") + v + " %";
+    });
+    const r = cost(c);
+    $("total").textContent = fmt(r2(r.total));
+    PARTS.forEach(([k]) => {
+      $("v-" + k).textContent = fmt(r2(r[k])) + " €";
+      $("b-" + k).style.width = (r[k] / r.total * 100) + "%";
+    });
+    const d = r2(r.total) - r2(base.total);
+    const el = $("delta");
+    if (Math.abs(d) < 0.005) { el.textContent = "Référence"; el.className = "delta flat"; }
+    else {
+      el.textContent = (d > 0 ? "+" : "−") + fmt(Math.abs(d)) + " € (" + (d > 0 ? "+" : "−") + fmt(Math.abs(d / base.total * 100)) + " %) par rapport à la référence";
+      el.className = "delta " + (d > 0 ? "up" : "down");
+    }
+  }
+  ids.forEach(id => $("s-" + id).addEventListener("input", render));
+  $("reset").addEventListener("click", () => { ids.forEach(id => $("s-" + id).value = 0); render(); });
+  $("copy").addEventListener("click", () => {
+    const t = $("mail").textContent, b = $("copy");
+    const done = () => { b.textContent = "Adresse copiée"; setTimeout(() => b.textContent = "Copier l'adresse", 2000); };
+    const fallback = () => { const s = getSelection(), rg = document.createRange(); rg.selectNodeContents($("mail")); s.removeAllRanges(); s.addRange(rg); b.textContent = "Adresse sélectionnée"; };
+    try { navigator.clipboard.writeText(t).then(done, fallback); } catch (e) { fallback(); }
+  });
+  render();
+})();
+</script>

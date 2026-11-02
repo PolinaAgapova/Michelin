@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coût pneu — prototype</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1c2330; --muted: #5b6577; --line: #e3e6ec;
+    --accent: #2f5bd3; --pos: #c2410c; --neg: #15803d;
+    --c1: #2f5bd3; --c2: #0e9aa7; --c3: #8b5cf6; --c4: #e0a100; --c5: #c2410c; --c6: #64748b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #11151c; --card: #1a2029; --ink: #e8ecf2; --muted: #9aa5b8; --line: #2a3240;
+      --accent: #7c9cf5; --pos: #fb923c; --neg: #4ade80;
+      --c1: #7c9cf5; --c2: #2dd4bf; --c3: #a78bfa; --c4: #fbbf24; --c5: #fb923c; --c6: #94a3b8; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 24px 16px 8px; max-width: 1100px; margin: auto; }
+  h1 { margin: 0; font-size: 22px; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  main { max-width: 1100px; margin: auto; padding: 8px 16px 40px; display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .card h2 { margin: 0 0 12px; font-size: 15px; }
+  .wide { grid-column: 1 / -1; }
+  select { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink); }
+  .total { font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .stack { display: flex; height: 18px; border-radius: 6px; overflow: hidden; margin: 12px 0; }
+  .legend { display: grid; grid-template-columns: auto 1fr auto auto; gap: 4px 10px; font-size: 13px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; margin-top: 5px; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { color: var(--muted); font-weight: 600; }
+  .slider { display: grid; grid-template-columns: 1fr 120px 52px; align-items: center; gap: 8px; font-size: 13px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .delta { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .up { color: var(--pos); } .down { color: var(--neg); }
+  .tornado { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 6px 0; font-size: 13px; align-items: center; }
+  .tornado .l { display: flex; justify-content: flex-end; border-right: 1px solid var(--muted); padding-right: 0; }
+  .tornado .r { display: flex; justify-content: flex-start; }
+  .bar { height: 14px; }
+  .bar.lo { background: var(--neg); border-radius: 3px 0 0 3px; }
+  .bar.hi { background: var(--pos); border-radius: 0 3px 3px 0; }
+  footer { max-width: 1100px; margin: auto; padding: 0 16px 32px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 520px) { .tornado { grid-template-columns: 110px 1fr 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Coût industriel d'un pneumatique — prototype</h1>
+  <p>Démonstrateur personnel réalisé avec l'aide de l'IA générative · données 100 % fictives</p>
+</header>
+<main>
+  <section class="card">
+    <h2>Pneu</h2>
+    <select id="tire" aria-label="Choisir un pneu"></select>
+    <p class="muted" id="tireInfo"></p>
+    <div class="total" id="total">—</div>
+    <div class="muted">€ par pneu bon</div>
+    <div class="stack" id="stack"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section class="card">
+    <h2>Simulation « what-if »</h2>
+    <div id="sliders" style="display:grid;gap:8px"></div>
+    <p style="margin:16px 0 0" class="muted">Écart par rapport à la référence</p>
+    <div class="delta" id="delta">—</div>
+    <div class="muted" id="simTotal"></div>
+  </section>
+
+  <section class="card wide">
+    <h2>Sensibilité : impact d'une variation de ±10 % sur le coût total (€)</h2>
+    <div class="tornado" id="tornado"></div>
+  </section>
+
+  <section class="card">
+    <h2>Nomenclature (matières)</h2>
+    <table id="bom"><thead><tr><th>Matière</th><th class="num">kg</th><th class="num">€/kg</th><th class="num">€</th></tr></thead><tbody></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>Gamme de fabrication</h2>
+    <table id="steps"><thead><tr><th>Étape</th><th class="num">MO €</th><th class="num">Machine €</th><th class="num">Énergie €</th></tr></thead><tbody></tbody></table>
+  </section>
+</main>
+<footer>API REST : <code>/api/tires</code>, <code>/api/tires/{code}/cost</code>, <code>/api/tires/{code}/simulate</code>, <code>/api/tires/{code}/sensitivity</code></footer>
+
+<script>
+const COMPONENTS = [
+  ["materials", "Matières", "--c1"], ["labor", "Main d'œuvre", "--c2"], ["machine", "Machine", "--c3"],
+  ["energy", "Énergie", "--c4"], ["scrap", "Rebut", "--c5"], ["overhead", "Frais de structure", "--c6"]];
+const SLIDERS = [
+  ["NATURAL_RUBBER", "Caoutchouc naturel"], ["SYNTHETIC_RUBBER", "Caoutchouc synthétique"],
+  ["FILLER", "Charges (noir, silice)"], ["STEEL", "Acier"], ["energy", "Énergie"], ["labor", "Taux horaire MO"]];
+const fmt = v => Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let tires = [];
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  if (!r.ok) throw new Error(path + " → " + r.status);
+  return r.json();
+}
+
+function renderCost(c) {
+  $("total").textContent = fmt(c.total);
+  $("stack").innerHTML = COMPONENTS.map(([k, , col]) =>
+    `<div title="${k}" style="width:${(c[k] / c.total) * 100}%;background:var(${col})"></div>`).join("");
+  $("legend").innerHTML = COMPONENTS.map(([k, label, col]) =>
+    `<span class="dot" style="background:var(${col})"></span><span>${label}</span>
+     <span class="num">${fmt(c[k])} €</span><span class="num muted">${Math.round(c[k] / c.total * 100)} %</span>`).join("");
+  $("bom").tBodies[0].innerHTML = c.materialLines.map(l =>
+    `<tr><td>${esc(l.label)}</td><td class="num">${fmt(l.kg)}</td><td class="num">${fmt(l.pricePerKg)}</td><td class="num">${fmt(l.cost)}</td></tr>`).join("");
+  $("steps").tBodies[0].innerHTML = c.stepLines.map(l =>
+    `<tr><td>${esc(l.step)}</td><td class="num">${fmt(l.labor)}</td><td class="num">${fmt(l.machine)}</td><td class="num">${fmt(l.energy)}</td></tr>`).join("");
+}
+
+function renderTornado(items) {
+  const max = Math.max(...items.map(i => Math.max(Math.abs(i.impactLow), Math.abs(i.impactHigh)))) || 1;
+  $("tornado").innerHTML = items.map(i => `
+    <span>${esc(i.driver)}</span>
+    <div class="l"><div class="bar lo" style="width:${Math.abs(i.impactLow) / max * 100}%" title="${fmt(i.impactLow)} €"></div></div>
+    <div class="r"><div class="bar hi" style="width:${Math.abs(i.impactHigh) / max * 100}%" title="+${fmt(i.impactHigh)} €"></div>
+      <span class="muted" style="margin-left:6px">±${fmt(Math.max(Math.abs(i.impactLow), i.impactHigh))}</span></div>`).join("");
+}
+
+function scenario() {
+  const v = k => Number($("s-" + k).value) / 100;
+  const materialPriceChange = {};
+  SLIDERS.slice(0, 4).forEach(([k]) => { if (v(k)) materialPriceChange[k] = v(k); });
+  return { materialPriceChange, energyPriceChange: v("energy"), laborRateChange: v("labor") };
+}
+
+async function simulate() {
+  SLIDERS.forEach(([k]) => { $("o-" + k).textContent = ($("s-" + k).value > 0 ? "+" : "") + $("s-" + k).value + " %"; });
+  const r = await api(`/api/tires/${$("tire").value}/simulate`, scenario());
+  $("delta").textContent = (r.delta > 0 ? "+" : "") + fmt(r.delta) + " € (" + (r.deltaPercent > 0 ? "+" : "") + fmt(r.deltaPercent) + " %)";
+  $("delta").className = "delta " + (r.delta > 0 ? "up" : r.delta < 0 ? "down" : "");
+  $("simTotal").textContent = `Coût simulé : ${fmt(r.scenario.total)} € (référence ${fmt(r.baseline.total)} €)`;
+}
+
+async function load() {
+  const code = $("tire").value;
+  const t = tires.find(x => x.code === code);
+  $("tireInfo").textContent = `${t.label} · ${t.dimension} · rebut ${(t.scrapRate * 100).toFixed(1)} %`;
+  renderCost(await api(`/api/tires/${code}/cost`));
+  renderTornado(await api(`/api/tires/${code}/sensitivity`));
+  await simulate();
+}
+
+(async () => {
+  $("sliders").innerHTML = SLIDERS.map(([k, label]) => `
+    <label class="slider"><span>${label}</span>
+      <input type="range" id="s-${k}" min="-30" max="30" step="5" value="0"><output id="o-${k}" class="num">0 %</output></label>`).join("");
+  SLIDERS.forEach(([k]) => $("s-" + k).addEventListener("input", simulate));
+  tires = await api("/api/tires");
+  $("tire").innerHTML = tires.map(t => `<option value="${esc(t.code)}">${esc(t.code)} — ${esc(t.label)}</option>`).join("");
+  $("tire").addEventListener("change", load);
+  await load();
+})().catch(e => { document.body.insertAdjacentHTML("afterbegin", `<p style="color:red;padding:16px">${esc(e.message)}</p>`); });
+</script>
+</body>
+</html>

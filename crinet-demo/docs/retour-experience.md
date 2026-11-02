@@ -34,6 +34,17 @@ simulation et analyse du coût d'un pneu, avec user stories, tests et documentat
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
+## Session 3 — migration d'un outil legacy (novembre 2026)
+Voir [migration-legacy.md](migration-legacy.md). Macro VBA fictive avec 4 pièges, portage fidèle en Java,
+tests de non-régression qui expliquent chaque écart. Résultat principal : une seule règle (assiette des frais
+de structure) explique ~8 % d'écart de coût. C'est une **décision métier**, pas un bug de code.
+
+### Expérience à réaliser : l'IA trouve-t-elle les pièges ?
+| Outil | Pièges trouvés (/4) | Règles fausses ou inventées | Relances | Temps | Remarques |
+|---|---|---|---|---|---|
+| ChatGPT | | | | | |
+| Claude | | | | | |
+
 ## Premières conclusions
 1. L'IA est très efficace pour **structurer** (code, user stories, documentation).
 2. Elle est **peu fiable sur la vraisemblance métier** : la valeur ajoutée humaine se déplace vers la

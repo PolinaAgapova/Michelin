@@ -17,16 +17,18 @@ Il reproduit à petite échelle la démarche décrite dans l'offre :
 - **Calculer** le coût d'un pneu : matières, main d'œuvre, machine, énergie, rebut, frais de structure
 - **Simuler** des variations de prix (matières par famille, énergie, taux horaire)
 - **Analyser** la sensibilité du coût à chaque inducteur (diagramme tornado)
+- **Migrer** : comparaison automatique avec un outil legacy Excel/VBA fictif
 
 ## Documents
 - [User stories et critères d'acceptation](docs/user-stories.md)
 - [Stratégie de réécriture AI-assisted](docs/strategie-ai-assisted.md)
+- [Migration d'un outil legacy Excel/VBA](docs/migration-legacy.md) : règles extraites, 4 pièges, tests de non-régression
 - [Journal de bord / retour d'expérience](docs/retour-experience.md)
 
 ## Lancer
 Prérequis : Java 21, Maven.
 ```bash
-mvn test                 # 17 tests
+mvn test                 # 21 tests
 mvn spring-boot:run      # puis http://localhost:8080
 ```
 
@@ -45,4 +47,6 @@ model/    records immuables + validation (TireSpec, BomLine, ProcessStep, Scenar
 service/  CostCalculator (règles de calcul), SimulationService (what-if, sensibilité)
 data/     SampleCatalog (données fictives en mémoire)
 web/      TireController (REST) + static/index.html (interface)
+legacy/   CalculCoutPneu.bas : macro VBA fictive à migrer
+test/…/legacy/  LegacyCostPort (portage fidèle) + LegacyParityTest (non-régression)
 ```

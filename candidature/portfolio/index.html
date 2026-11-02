@@ -98,6 +98,15 @@
   .log span:not(.n) { color: var(--muted); font-size: 15px; grid-column: 2; }
   .log b { grid-column: 2; }
   .takeaway { background: var(--accent-soft); border-radius: 10px; padding: 16px 18px; font-size: 16px; }
+  .exp { display: grid; gap: 12px; }
+  .exp h3 { font: 700 22px/1.25 var(--display); }
+  .score-wrap { overflow-x: auto; }
+  .score { border-collapse: collapse; width: 100%; font-size: 15px; }
+  .score th, .score td { text-align: left; padding: 9px 10px 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .score th { font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .score td.c { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .score tr.total td { font-weight: 600; border-bottom: 0; }
+  .ok { color: var(--down); } .half { color: var(--leather); }
 
   /* timeline */
   .tl { display: grid; gap: 22px; }
@@ -187,6 +196,23 @@
       <div><span class="n">02</span><b>Inducteur oublié</b><span>L'analyse de sensibilité ignorait le coût horaire machine, pourtant le poste le plus sensible.</span></div>
       <div><span class="n">03</span><b>Libellés techniques à l'écran</b><span>« Prix SYNTHETIC_RUBBER » affiché à l'utilisateur. Repéré en revue visuelle.</span></div>
       <div><span class="n">04</span><b>Erreur d'outillage</b><span>Une commande d'arrêt du serveur interrompait sa propre session.</span></div>
+    </div>
+    <div class="exp col">
+      <h3>Expérience : l'IA trouve-t-elle les pièges d'une vieille macro Excel ?</h3>
+      <p>J'ai écrit une macro VBA fictive « de 2009 » avec quatre pièges typiques, puis demandé à ChatGPT et à Claude d'en extraire les règles et les risques avant une migration vers Java.</p>
+      <div class="score-wrap">
+        <table class="score">
+          <thead><tr><th>Piège</th><th>ChatGPT</th><th>Claude</th></tr></thead>
+          <tbody>
+            <tr><td>Arrondi bancaire de VBA</td><td class="c ok">trouvé</td><td class="c ok">trouvé</td></tr>
+            <tr><td>Formule du rebut approximative</td><td class="c ok">trouvé</td><td class="c ok">trouvé</td></tr>
+            <tr><td>Frais de structure sur la main d'œuvre seule (≈ 8 % du coût)</td><td class="c half">décrit, non questionné</td><td class="c ok">trouvé</td></tr>
+            <tr><td>Matière manquante comptée 0 € sans alerte</td><td class="c ok">trouvé</td><td class="c ok">trouvé</td></tr>
+            <tr class="total"><td>Score</td><td class="c">3,5 / 4</td><td class="c">4 / 4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Les deux outils ont aussi trouvé des risques que je n'avais pas prévus (doublons, résultats jamais effacés, recherche Excel instable). Limites : un seul essai par outil, et les pièges ont été écrits avec Claude.</p>
     </div>
     <p class="takeaway col"><b>Ce que j'en retiens :</b> l'IA accélère la structure, la valeur humaine se déplace vers la spécification, la vérification et le dialogue avec le métier. Des tests construits sur des exemples calculés à la main rendent l'IA contrôlable.</p>
   </section>

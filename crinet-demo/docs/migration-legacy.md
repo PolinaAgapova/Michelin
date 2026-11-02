@@ -63,3 +63,4 @@ Vérification : en modifiant volontairement une règle du portage, le test écho
 La macro et son analyse ont été produites avec la même IA : l'extraction des règles ci-dessus
 **démontre la méthode** mais ne mesure pas la capacité d'une IA à comprendre un code inconnu.
 Cette mesure est l'objet de l'expérience décrite dans [`legacy/README.md`](../legacy/README.md).
+Résultats : ChatGPT 3,5 / 4, Claude 4 / 4 (détail dans [retour-experience.md](retour-experience.md)).

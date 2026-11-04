@@ -4,7 +4,8 @@ Bannière codée en HTML/CSS/SVG (aucune image générée) : tout est vectoriel 
 
 | Fichier | Rôle |
 |---|---|
-| `banniere-finale.html` | **Version finale** (direction A retravaillée) |
+| `banniere-finale.html` | **Version finale** (direction A retravaillée) — « Entre les données et les gens. » |
+| `banniere-curieuse.html` | Variante — « Curieuse par nature, analytique par formation. » |
 | `a-atlas.html` | Direction A — Atlas céleste |
 | `b-diffusion.html` | Direction B — Diffusion (une grille de données devient un ciel) |
 | `c-orbites.html` | Direction C — Orbites sur ivoire |

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>Bannière — Curieuse par nature</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+  /* Bannière finale — direction A « Atlas céleste », retravaillée.
+     Pour modifier : les textes sont dans .txt (HTML), les couleurs dans :root,
+     le parcours dans le tableau `cities` (vraies coordonnées lon/lat). Export : node render.js banniere-finale.html sortie.png */
+  :root{
+    --night:#060b1a; --night2:#0e1b3a; --ivory:#f2ecdf; --ivory-2:rgba(242,236,223,.78);
+    --champagne:#e3c48f; --emerald:#3fae8f;
+    --display:"Instrument Serif","Times New Roman",serif;
+    --sans:"Geist","Helvetica Neue",Arial,sans-serif;
+    --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  }
+  html,body{margin:0;background:var(--night)}
+  .b{position:relative;width:1584px;height:396px;overflow:hidden;
+     background:radial-gradient(55% 120% at 92% 0%, rgba(63,174,143,.13), transparent 62%),
+                radial-gradient(80% 160% at 72% -10%, var(--night2), var(--night) 72%)}
+  svg{position:absolute;inset:0}
+  .txt{position:absolute;left:556px;top:40px}
+  .eye{font:500 15px var(--mono);letter-spacing:.3em;color:var(--champagne);text-transform:uppercase}
+  .l1{margin-top:18px;font:600 74px/1 var(--sans);letter-spacing:-.035em;color:var(--ivory)}
+  .l2{margin-top:-6px;font:italic 400 96px/1 var(--display);letter-spacing:-.01em;color:var(--champagne)}
+  .l2.first{margin-top:14px;font-size:var(--h-serif,88px)}
+  .l1.second{margin-top:2px;font-size:var(--h-sans,64px)}
+  .sub{margin-top:14px;font:300 31px/1.28 var(--sans);color:var(--ivory-2)}
+</style></head><body>
+<div class="b" id="b">
+  <svg id="s" width="1584" height="396" viewBox="0 0 1584 396"></svg>
+  <div class="txt">
+    <div class="eye">Data · Stratégie · Transformation</div>
+    <div class="l2 first">Curieuse par nature,</div>
+    <div class="l1 second">analytique par formation.</div>
+    <div class="sub">Je relie la technologie, le métier et l'humain<br>pour faire avancer les projets.</div>
+  </div>
+</div>
+<script src="lib.js"></script>
+<script>
+  const { el, text, field, star, defs, rng, smooth } = B, s = document.getElementById('s');
+  defs(s, '#f2ecdf');
+  const g = el('g', {}, s);
+
+  // 1. Grille de déclinaison : arcs concentriques d'un centre situé sous la bannière.
+  const cx = 980, cy = 2500, grid = el('g', { stroke: '#f2ecdf', fill: 'none', 'stroke-width': .7 }, g);
+  [2060, 2150, 2240, 2330, 2420].forEach((r, i) => {
+    const x0 = -40, x1 = 1624, y = x => cy - Math.sqrt(r * r - (x - cx) ** 2);
+    el('path', { d: `M${x0},${y(x0)} A${r},${r} 0 0 1 ${x1},${y(x1)}`, 'stroke-opacity': i === 2 ? .11 : .055 }, grid);
+    text(g, 1546, y(1546) - 5, `+${40 + i * 5}°`, { fill: '#f2ecdf', 'fill-opacity': .32, 'font-family': 'Geist Mono', 'font-size': 10, 'text-anchor': 'end' });
+  });
+  for (let a = -.42; a <= .42; a += .06) {
+    const p = r => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+    const [x0, y0] = p(2000), [x1, y1] = p(2600);
+    el('line', { x1: x0, y1: y0, x2: x1, y2: y1, 'stroke-opacity': .04 }, grid);
+  }
+
+  // 2. Champ d'étoiles, atténué derrière le texte.
+  field(g, { seed: 11, n: 330, avoid: [{ x: 530, y: 30, w: 800, h: 320, k: .25 }, { x: 30, y: 40, w: 420, h: 190, k: .55 }] });
+
+  // 3. Le parcours, projeté depuis les vraies coordonnées (lon, lat).
+  const P = ([lon, lat]) => [76 + (lon - 3) * 10, 202 - (lat - 43) * 9.5];
+  const cities = [
+    { n: 'MOSCOU', c: '55°45′N 37°37′E', y: '2002', ll: [37.62, 55.75], dx: -12, dy: -10, anchor: 'end' },
+    { n: 'AVIGNON', c: '43°57′N 4°48′E', y: '2022', ll: [4.81, 43.95], dx: 14, dy: 5 },
+    { n: 'CLERMONT-FD', c: '45°46′N 3°05′E', y: '2025', ll: [3.08, 45.78], dx: 14, dy: -46 },
+  ].map(c => ({ ...c, p: P(c.ll) }));
+  const path = el('g', { stroke: '#e3c48f', 'stroke-width': 1, fill: 'none' }, g);
+  el('path', { d: `M${cities[0].p} L${cities[1].p} L${cities[2].p}`, 'stroke-opacity': .6 }, path);
+  cities.forEach((c, i) => {
+    const [x, y] = c.p, last = i === 2;
+    star(g, x, y, last ? 2.6 : 2, .95, '#f2ecdf', last);
+    if (last) el('circle', { cx: x, cy: y, r: 9, fill: 'none', stroke: '#e3c48f', 'stroke-opacity': .7 }, g);
+    const t = text(g, x + c.dx, y + c.dy, c.n, { fill: '#f2ecdf', 'fill-opacity': .82, 'font-family': 'Geist Mono', 'font-size': 11, 'letter-spacing': '.12em', 'text-anchor': c.anchor || 'start' });
+    text(g, x + c.dx, y + c.dy + 13, `${c.y} · ${c.c}`, { fill: '#f2ecdf', 'fill-opacity': .4, 'font-family': 'Geist Mono', 'font-size': 9, 'letter-spacing': '.06em', 'text-anchor': c.anchor || 'start' });
+  });
+  // La trajectoire continue jusqu'à la signature : le parcours mène au texte.
+  const [qx, qy] = cities[2].p, tx = 534, ty = 49;
+  const trail = el('path', { d: `M${qx},${qy} Q90,-80 ${tx},${ty}`, fill: 'none', stroke: '#e3c48f', 'stroke-width': 1, 'stroke-dasharray': '1 5', 'stroke-linecap': 'round', 'stroke-opacity': .7 }, g);
+  star(g, tx, ty, 2.2, 1, '#e3c48f', true);
+  text(g, 168, 104, 'FIG. 1 — TRAJECTOIRE', { fill: '#e3c48f', 'fill-opacity': .55, 'font-family': 'Geist Mono', 'font-size': 10, 'letter-spacing': '.18em' });
+
+  // 4. Equuleus, « le Petit Cheval » : la seule référence à l'équitation, pour qui sait lire le ciel.
+  const eq = [[1330, 112], [1366, 98], [1394, 144], [1352, 160]];
+  el('path', { d: `M${eq.map(p => p.join(',')).join(' L')} Z`, stroke: '#e3c48f', 'stroke-opacity': .4, fill: 'none', 'stroke-width': .8 }, g);
+  eq.forEach(([x, y], i) => star(g, x, y, i === 0 ? 1.9 : 1.2, .9, '#f2ecdf', i === 0));
+  text(g, 1406, 150, 'α EQU · KITALPHA', { fill: '#e3c48f', 'fill-opacity': .6, 'font-family': 'Geist Mono', 'font-size': 10, 'letter-spacing': '.12em' });
+  text(g, 1406, 168, 'le petit cheval', { fill: '#f2ecdf', 'fill-opacity': .4, 'font-family': 'Instrument Serif', 'font-style': 'italic', 'font-size': 13 });
+
+  // 5. Un axe de données qui se dissout en étoiles.
+  const R = rng(5), ax = el('g', {}, g), y0 = 372;
+  el('line', { x1: 548, y1: y0, x2: 1010, y2: y0, stroke: '#3fae8f', 'stroke-opacity': .45, 'stroke-width': .8 }, ax);
+  for (let x = 548; x <= 1536; x += 22) {
+    const t = smooth((x - 960) / 560);
+    if (t < .02) el('line', { x1: x, y1: y0, x2: x, y2: y0 - ((x - 548) % 110 === 0 ? 9 : 5), stroke: '#3fae8f', 'stroke-opacity': .7, 'stroke-width': .9 }, ax);
+    else star(ax, x + (R() - .5) * 26 * t, y0 - t * t * R() * 150, .7 + t * 1.1, .35 + t * .45, t > .6 ? '#e3c48f' : '#f2ecdf', t > .9 && R() > .7);
+  }
+
+  // 6. Signature.
+  text(g, 1544, 40, 'FR · RU · EN', { fill: '#f2ecdf', 'fill-opacity': .7, 'font-family': 'Geist Mono', 'font-size': 12, 'letter-spacing': '.28em', 'text-anchor': 'end' });
+</script>
+</body></html>

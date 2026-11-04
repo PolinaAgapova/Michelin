@@ -1,0 +1,32 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Executive summary — MyXpert Field to Decision</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff;color:#141a2b}
+body{font:9.6pt/1.45 Geist,Arial,sans-serif}.page{width:210mm;height:297mm;overflow:hidden;box-sizing:border-box;padding:15mm 17mm 12mm;border-top:6mm solid #0f1526}
+h1{font:400 25pt/1.05 "Instrument Serif",Georgia,serif;margin:0 0 3mm} p{margin:0 0 2.6mm} ul,ol{margin:0 0 2.8mm;padding-left:5mm} li{margin:0 0 1mm}
+p:nth-of-type(1){color:#4b5266;font-size:9pt;border-bottom:1px solid #d9d3c6;padding-bottom:3mm;margin-bottom:4mm} b{font-weight:600}
+.foot{position:absolute;bottom:10mm;left:17mm;right:17mm;font-size:8pt;color:#7a8091;border-top:1px solid #d9d3c6;padding-top:2mm}</style></head>
+<body><div class="page" style="position:relative"><h1>MyXpert — Field to Decision · Executive summary</h1>
+<p><i>Étude de cas exploratoire et indépendante, sans lien avec Michelin. Polina Agapova, novembre 2026.</i></p>
+<p><b>Problème étudié.</b> MyXpert propose aux distributeurs de pneus commerciaux un sélecteur de produits, des spécifications, des recommandations de pression et de montage, et un diagnostic de dommage pas à pas <i>(fiches publiques des stores)</i>. Je me suis concentrée sur une question : <b>comment faire en sorte qu’un diagnostic commencé sur le terrain aille jusqu’à une décision utile au client, y compris pour les utilisateurs qui arrivent de MyTechXpert, appelée à être décommissionnée ?</b></p>
+<p><b>Approche.</b> Recherche sur les sources publiques, en séparant faits, hypothèses, recommandations et données fictives. Persona et parcours AS-IS hypothétiques, prototype TO-BE cliquable. Dashboard d’analytics sur un modèle d’événements synthétique (6 000 utilisateurs fictifs, 120 jours), avec des KPI définis et testés. Priorisation RICE calculée, roadmap dépendante de la capacité et des échéances, plan de déploiement et de transition fondé sur des critères explicites.</p>
+<p><b>Enseignements, tous hypothétiques à ce stade.</b></p>
+<ol>
+<li>Les abandons de diagnostic se concentreraient sur les moments où le terrain s’impose : réseau faible à l’étape photo, interruptions.</li>
+<li>Les fiches publiques de MyXpert ne mentionnent ni l’inspection de flotte, ni le suivi des pneus des clients, ni les rapports d’inspection de MyTechXpert. Si ces fonctions ne sont pas reprises, ce sont précisément des <b>données créées par les utilisateurs</b> qui sont en jeu au décommissionnement.</li>
+<li>Le score RICE seul ferait glisser la migration en « plus tard » : une échéance de décommissionnement doit être arbitrée explicitement.</li>
+</ol>
+<p><b>Recommandations.</b></p>
+<ul>
+<li><b>Now</b> : reprise d’un diagnostic interrompu et photo facultative ajoutée plus tard, validées par un test A/B (critère : taux de diagnostics terminés ; garde-fous : part des résultats avec photo, CSAT).</li>
+<li><b>Now</b> : inventaire MyTechXpert → MyXpert et six critères de décommissionnement, avant toute date.</li>
+<li><b>Next</b> : un résultat de diagnostic partageable au client, après entretiens avec des distributeurs et avis juridique.</li>
+<li><b>Later, conditionnel</b> : diagnostic entièrement hors ligne, seulement si l’abandon en réseau faible reste au-dessus de 15 % après le test.</li>
+</ul>
+<p><b>Limites.</b> Je n’ai pas testé l’application et n’ai accès à aucune donnée réelle. Les chiffres du dashboard sont fictifs et servent à montrer une méthode. Les règles de diagnostic du prototype sont inventées. Les estimations d’impact et d’effort sont les miennes.</p>
+<p><b>Prochaines étapes à valider avec l’équipe.</b></p>
+<ol>
+<li>Confronter les hypothèses aux données réelles : abandons par étape, rétention selon l’origine.</li>
+<li>Établir l’inventaire réel des fonctions reprises de MyTechXpert.</li>
+<li>Observer 5 à 8 techniciens sur le terrain.</li>
+<li>Remplacer mes estimations RICE par celles de l’équipe, puis recalculer la roadmap.</li>
+</ol><div class="foot">Independent exploratory case study — Non-official Michelin project. Données fictives. Polina Agapova · agapovapolina2002@gmail.com</div></div></body></html>

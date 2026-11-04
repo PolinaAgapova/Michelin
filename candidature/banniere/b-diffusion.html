@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>Bannière B — Diffusion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+  /* Direction B — « Diffusion » : une grille de données parfaitement ordonnée à gauche
+     se libère progressivement et devient un ciel, puis un réseau. Texte aligné à droite. */
+  :root{
+    --night:#04110f; --night2:#0a2622; --ivory:#f2ecdf; --ivory-2:rgba(242,236,223,.7);
+    --emerald:#4cc3a0; --champagne:#e3c48f;
+    --display:"Instrument Serif","Times New Roman",serif;
+    --sans:"Geist","Helvetica Neue",Arial,sans-serif;
+    --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  }
+  html,body{margin:0;background:var(--night)}
+  .b{position:relative;width:1584px;height:396px;overflow:hidden;
+     background:radial-gradient(70% 150% at 20% 0%, var(--night2), var(--night) 70%)}
+  svg{position:absolute;inset:0}
+  .txt{position:absolute;right:64px;top:52px;text-align:right}
+  .eye{font:500 14px var(--mono);letter-spacing:.3em;color:var(--emerald);text-transform:uppercase}
+  .l1{margin-top:18px;font:600 74px/1 var(--sans);letter-spacing:-.035em;color:var(--ivory)}
+  .l2{margin-top:-6px;font:italic 400 96px/1 var(--display);color:var(--champagne)}
+  .sub{margin-top:14px;font:300 25px/1.35 var(--sans);color:var(--ivory-2)}
+</style></head><body>
+<div class="b">
+  <svg id="s" width="1584" height="396" viewBox="0 0 1584 396"></svg>
+  <div class="txt">
+    <div class="eye">Data · Stratégie · Transformation</div>
+    <div class="l1">Entre les données</div>
+    <div class="l2">et les gens.</div>
+    <div class="sub">Je relie la technologie, le métier et l'humain<br>pour faire avancer les projets.</div>
+  </div>
+</div>
+<script src="lib.js"></script>
+<script>
+  const { el, text, star, defs, rng, smooth } = B, s = document.getElementById('s');
+  defs(s, '#f2ecdf');
+  const g = el('g', {}, s), R = rng(23);
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const EM = [76, 195, 160], IV = [242, 236, 223], CH = [227, 196, 143];
+  const txtZone = { x: 800, y: 36, w: 760, h: 316 };
+  const nodes = [];
+  for (let x = 36; x < 1584; x += 26) for (let y = 30; y < 380; y += 26) {
+    const t = smooth((x - 240) / 760);
+    if (R() < t * .62) continue;                    // la grille se raréfie
+    const px = x + (R() - .5) * 70 * t, py = y + (R() - .5) * 70 * t;
+    const col = t < .5 ? mix(EM, IV, t * 2) : mix(IV, CH, (t - .5) * 2 * R());
+    let o = .55 - t * .15 + R() * t * .3;
+    if (B.inRect(px, py, txtZone)) o *= .3;
+    const r = t < .05 ? 1.1 : .6 + R() * 1.4 * t;
+    if (t < .05) el('rect', { x: px - 1, y: py - 1, width: 2, height: 2, fill: `rgb(${col})`, opacity: o * .8 }, g);
+    else star(g, px, py, r, o, `rgb(${col})`, t > .85 && R() > .96 && !B.inRect(px, py, txtZone));
+    if (t > .35 && t < .8 && R() < .2) nodes.push([px, py]);
+  }
+  // réseau : chaque nœud est relié à ses deux plus proches voisins
+  const net = el('g', { stroke: '#e3c48f', 'stroke-width': .7 }, g);
+  nodes.forEach(([x, y], i) => {
+    nodes.map((q, j) => [j, Math.hypot(q[0] - x, q[1] - y)]).filter(([j, d]) => j !== i && d < 120)
+      .sort((a, b) => a[1] - b[1]).slice(0, 2)
+      .forEach(([j]) => el('line', { x1: x, y1: y, x2: nodes[j][0], y2: nodes[j][1], 'stroke-opacity': .22 }, net));
+  });
+  text(g, 36, 22, 'n = 1 584 × 396  ·  ordre → liens', { fill: '#4cc3a0', 'fill-opacity': .5, 'font-family': 'Geist Mono', 'font-size': 10, 'letter-spacing': '.14em' });
+  text(g, 1520, 376, 'FR · RU · EN', { fill: '#f2ecdf', 'fill-opacity': .6, 'font-family': 'Geist Mono', 'font-size': 12, 'letter-spacing': '.28em', 'text-anchor': 'end' });
+</script>
+</body></html>

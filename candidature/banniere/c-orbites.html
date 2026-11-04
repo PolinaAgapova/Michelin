@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>Bannière C — Orbites sur ivoire</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+  /* Direction C — « Orbites » : papier ivoire, deux orbites qui se croisent (données / personnes).
+     Les points de rencontre sont la signature. Lumineux, éditorial, à contre-courant des bannières sombres. */
+  :root{
+    --paper:#f2ece0; --ink:#121c38; --ink-2:rgba(18,28,56,.66); --copper:#b8693a; --emerald:#2f7f69;
+    --display:"Instrument Serif","Times New Roman",serif;
+    --sans:"Geist","Helvetica Neue",Arial,sans-serif;
+    --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  }
+  html,body{margin:0;background:var(--paper)}
+  .b{position:relative;width:1584px;height:396px;overflow:hidden;background:var(--paper)}
+  svg{position:absolute;inset:0}
+  .txt{position:absolute;left:548px;top:50px}
+  .eye{font:500 14px var(--mono);letter-spacing:.3em;color:var(--copper);text-transform:uppercase}
+  .l1{margin-top:18px;font:600 74px/1 var(--sans);letter-spacing:-.035em;color:var(--ink)}
+  .l2{margin-top:-6px;font:italic 400 96px/1 var(--display);color:var(--copper)}
+  .sub{margin-top:14px;font:300 25px/1.35 var(--sans);color:var(--ink-2)}
+</style></head><body>
+<div class="b">
+  <svg id="s" width="1584" height="396" viewBox="0 0 1584 396"></svg>
+  <div class="txt">
+    <div class="eye">Data · Stratégie · Transformation</div>
+    <div class="l1">Entre les données</div>
+    <div class="l2">et les gens.</div>
+    <div class="sub">Je relie la technologie, le métier et l'humain<br>pour faire avancer les projets.</div>
+  </div>
+</div>
+<script src="lib.js"></script>
+<script>
+  const { el, text, rng } = B, s = document.getElementById('s');
+  const d = el('defs', {}, s);
+  const f = el('filter', { id: 'grain' }, d);
+  el('feTurbulence', { type: 'fractalNoise', baseFrequency: '.9', numOctaves: '2', seed: '4' }, f);
+  el('feColorMatrix', { values: '0 0 0 0 0.07  0 0 0 0 0.11  0 0 0 0 0.22  0 0 0 .55 0' }, f);
+  el('rect', { width: 1584, height: 396, filter: 'url(#grain)', opacity: .22 }, s);
+  const g = el('g', {}, s);
+
+  // deux ellipses paramétriques
+  const E = (cx, cy, rx, ry, rot) => ({ cx, cy, rx, ry, c: Math.cos(rot), s: Math.sin(rot),
+    at(t) { const x = rx * Math.cos(t), y = ry * Math.sin(t); return [cx + x * this.c - y * this.s, cy + x * this.s + y * this.c]; },
+    f([px, py]) { const x = px - cx, y = py - cy, u = x * this.c + y * this.s, v = -x * this.s + y * this.c; return (u / rx) ** 2 + (v / ry) ** 2 - 1; } });
+  const A = E(1350, 200, 250, 112, -.26), C = E(1318, 204, 196, 150, .42);
+  const draw = (e, color, w, dash) => { const pts = []; for (let i = 0; i <= 240; i++) pts.push(e.at(i / 240 * Math.PI * 2)); el('path', { d: 'M' + pts.join(' L') + 'Z', fill: 'none', stroke: color, 'stroke-width': w, 'stroke-dasharray': dash || '' }, g); };
+  draw(E(1336, 202, 330, 186, -.05), '#121c38', .5, '2 6');
+  draw(A, '#121c38', 1.1); draw(C, '#b8693a', 1.1);
+
+  // orbite « données » : points réguliers ; orbite « personnes » : points de tailles variées
+  for (let i = 0; i < 36; i++) { const [x, y] = A.at(i / 36 * Math.PI * 2); el('rect', { x: x - 1.6, y: y - 1.6, width: 3.2, height: 3.2, fill: '#121c38' }, g); }
+  const R = rng(9);
+  for (let i = 0; i < 22; i++) { const [x, y] = C.at(i / 22 * Math.PI * 2 + R() * .2); el('circle', { cx: x, cy: y, r: 1.5 + R() * 3, fill: '#b8693a', opacity: .55 + R() * .45 }, g); }
+
+  // points de rencontre
+  let prev = A.at(0), pv = C.f(prev); const meet = [];
+  for (let i = 1; i <= 2000; i++) { const p = A.at(i / 2000 * Math.PI * 2), v = C.f(p); if (Math.sign(v) !== Math.sign(pv)) meet.push(p); pv = v; }
+  meet.forEach(([x, y]) => { el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: '#2f7f69', 'stroke-width': 1.2 }, g); el('circle', { cx: x, cy: y, r: 3.4, fill: '#2f7f69' }, g); });
+
+  const lab = (x, y, t, c, a = 'start') => text(g, x, y, t, { fill: c, 'font-family': 'Geist Mono', 'font-size': 10, 'letter-spacing': '.16em', 'text-anchor': a });
+  const [ax, ay] = A.at(-.15); lab(ax + 14, ay, 'ORBITE I — DONNÉES', '#121c38');
+  const [bx, by] = C.at(1.9); lab(bx - 8, by + 22, 'ORBITE II — PERSONNES', '#b8693a', 'middle');
+  if (meet[0]) lab(meet[0][0] + 16, meet[0][1] - 12, '∩ LIEN', '#2f7f69');
+  text(g, 40, 34, 'FR · RU · EN', { fill: '#121c38', 'fill-opacity': .7, 'font-family': 'Geist Mono', 'font-size': 12, 'letter-spacing': '.28em' });
+</script>
+</body></html>

@@ -1,0 +1,27 @@
+{
+  "name": "mixflow-lab",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Prototype personnel de candidature : flux, stockage et traçabilité des mélanges de laboratoire. Données fictives, projet non affilié à Michelin.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build:single": "npm run build && node scripts/single.mjs"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.3",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vitest": "2.1.5"
+  }
+}

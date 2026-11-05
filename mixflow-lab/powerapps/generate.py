@@ -81,6 +81,16 @@ for i in range(1, 91):
         statut = "Bloqué"
     lots.append((num, m[0], fab, per, q0, rest, emp, statut, labo))
 
+# Anomalies réalistes injectées pour la démonstration des contrôles de qualité des données :
+#  - deux lots « froid » rangés sur un rack ambiant (déplacement non tracé)
+#  - deux lots dont le reste en stock ne correspond pas à l'historique des prélèvements
+cold = [i for i, l in enumerate(lots) if l[7] == "Disponible" and dict((m[0], m[4]) for m in MELANGES)[l[1]].startswith("Froid")]
+amb = [e[0] for e in EMPL if e[4] == "Ambiant"]
+for i in cold[:2]:
+    l = list(lots[i]); l[6] = random.choice(amb); lots[i] = tuple(l)
+for i in [j for j, l in enumerate(lots) if l[7] == "Disponible" and l[5] > 1][3:5]:
+    l = list(lots[i]); l[5] = round(l[5] + 1.5, 1); lots[i] = tuple(l)
+
 mvts.sort(key=lambda x: (x[2], x[0]))
 # identifiants renumérotés dans l'ordre chronologique : trier par IdMouvement = trier par date
 mvts = [(f"MV-{i:05d}", *m[1:]) for i, m in enumerate(mvts, 1)]
@@ -109,6 +119,17 @@ sheet(wb.create_sheet(), "Lots", ["NumLot", "CodeMelange", "DateFabrication", "D
 sheet(wb.create_sheet(), "Mouvements", ["IdMouvement", "NumLot", "DateMouvement", "TypeMouvement", "QuantiteKg", "De", "Vers", "Utilisateur", "Commentaire"],
       [(m[0], m[1], iso(m[2]), *m[3:]) for m in mvts])
 wb.save("MixflowLab.xlsx")
+
+# Même jeu de données pour le prototype web
+import json, os
+os.makedirs("../src/data", exist_ok=True)
+json.dump({
+    "ref": REF.isoformat(),
+    "melanges": [dict(zip(["code", "libelle", "famille", "dureeVie", "conservation", "labo"], m)) for m in MELANGES],
+    "emplacements": [dict(zip(["code", "zone", "niveau", "ergo", "conservation", "capacite"], e)) for e in EMPL],
+    "lots": [dict(zip(["num", "melange", "fab", "peremption", "qteInit", "qteReste", "emplacement", "statut", "labo"], (l[0], l[1], l[2].isoformat(), l[3].isoformat(), *l[4:]))) for l in lots],
+    "mouvements": [dict(zip(["id", "lot", "date", "type", "qte", "de", "vers", "user", "commentaire"], (m[0], m[1], m[2].isoformat(), *m[3:]))) for m in mvts],
+}, open("../src/data/dataset.json", "w"), ensure_ascii=False, indent=0)
 
 # Étiquettes QR (lots encore en stock), 3 × 7 par page A4
 c = canvas.Canvas("Etiquettes_QR.pdf", pagesize=A4)

@@ -7,7 +7,7 @@ import { DATA, inStock, isExpired, type Lot } from '../data/lab';
  * ce qui permet d'animer leur déplacement d'un emplacement à l'autre lors de la réimplantation.
  */
 const SLOT_W = 30, LVL_H = 36, BAC_D = 13, BOX_W = 24, BOX_H = 18, BOX_D = 11;
-const UNIT_GAP = 46, UNIT_X0 = 112, BASE_Y = 238;
+const UNIT_GAP = 46, UNIT_X0 = 222, BASE_Y = 238;
 const ZONES = ['A', 'B', 'C', 'D'] as const;
 const unitWidth = 4 * SLOT_W + 8;
 const ux = (u: number) => UNIT_X0 + u * (unitWidth + UNIT_GAP + 4 * BAC_D * .6 - 10);
@@ -46,7 +46,7 @@ export function Magasin3D({ placement, color, label, playing }: {
     const ja = (bySlot.get(placement(a)) ?? []).indexOf(a), jb = (bySlot.get(placement(b)) ?? []).indexOf(b);
     return jb - ja || Number(placement(a)[3]) - Number(placement(b)[3]);
   });
-  const W = ux(3) + unitWidth + 4 * BAC_D * .6 + 120, H = BASE_Y + 40;
+  const W = ux(3) + unitWidth + 4 * BAC_D * .6 + 120, H = BASE_Y + 34;
   const goldY0 = P(0, LVL_H * 1, 0)[1], goldY1 = P(0, LVL_H * 3 - 6, 0)[1];
 
   return (
@@ -55,8 +55,21 @@ export function Magasin3D({ placement, color, label, playing }: {
       <rect x={0} y={goldY1} width={W} height={goldY0 - goldY1} fill="rgba(242,179,61,.07)" />
       <text x={W - 8} y={goldY1 + 16} textAnchor="end" style={{ fill: 'var(--amber)' }}>ZONE OR</text>
       <text x={W - 8} y={goldY1 + 30} textAnchor="end" style={{ fill: 'var(--amber)', opacity: .8 }}>niveaux 2–3</text>
-      {/* silhouette d'échelle : technicienne en blouse, un bac tenu à hauteur de taille (zone Or) */}
-      <g transform={`translate(10 ${BASE_Y + 4})`} strokeLinejoin="round" strokeLinecap="round">
+      {/* deux silhouettes : le même geste, à deux hauteurs. À gauche, se baisser vers le niveau 1 ; à droite, prendre à hauteur de taille. */}
+      <g transform={`translate(4 ${BASE_Y + 4})`} strokeLinecap="round" strokeLinejoin="round" fill="none">
+        <path d="M30 -80 L46 -46 L40 -4" stroke="#5f7282" strokeWidth={10} />
+        <path d="M27 -80 L28 -44 L22 -4" stroke="#53646f" strokeWidth={10} />
+        <path d="M34 -2 L48 -2 M16 -2 L28 -2" stroke="#3f4d59" strokeWidth={4} />
+        <path d="M28 -86 L58 -124" stroke="#c9d4dc" strokeWidth={26} />
+        <path d="M26 -78 L34 -92" stroke="#c9d4dc" strokeWidth={20} />
+        <path d="M56 -120 L64 -80 L66 -44" stroke="#b9c6cf" strokeWidth={7} />
+        <circle cx={70} cy={-134} r={10.5} fill="#e2b896" />
+        <path d="M60 -140 C64 -150 80 -146 80 -136 C76 -142 66 -144 60 -140 Z" fill="#6b4a32" />
+        <path d="M61 -139 C52 -136 46 -128 44 -118" stroke="#6b4a32" strokeWidth={5} />
+        <g transform="translate(58 -44)"><polygon points="0,4 16,4 16,16 0,16" fill="var(--data)" /><polygon points="0,4 4,0 20,0 16,4" fill="#7fd6cb" /><polygon points="16,4 20,0 20,12 16,16" fill="#2c8a7d" /></g>
+        <text x={40} y={18} textAnchor="middle" style={{ fill: 'var(--bad)', font: '600 11px var(--sans)' }}>✗ se baisser</text>
+      </g>
+      <g transform={`translate(104 ${BASE_Y + 4})`} strokeLinejoin="round" strokeLinecap="round">
         <path d="M14 -76 L12 -6 Q12 -2 16 -2 L21 -2 L23 -58 L26 -2 L31 -2 Q35 -2 35 -6 L33 -76 Z" fill="#5f7282" stroke="#5f7282" strokeWidth={2} />
         <path d="M9 -2 L22 -2 M25 -2 L38 -2" stroke="#3f4d59" strokeWidth={4} />
         <path d="M24 -151 C14 -151 9 -147 8 -140 L3 -80 Q24 -74 45 -80 L40 -140 C39 -147 34 -151 24 -151 Z" fill="#c9d4dc" stroke="#c9d4dc" strokeWidth={2} />
@@ -67,11 +80,8 @@ export function Magasin3D({ placement, color, label, playing }: {
         <circle cx={24} cy={-168} r={10.5} fill="#e2b896" />
         <path d="M14 -172 C10 -160 9 -146 13 -134 C15 -146 16 -158 17 -168 Z" fill="#6b4a32" />
         <path d="M13.5 -170 C14 -182 34 -183 34.5 -170 C31 -175 18 -176 13.5 -170 Z" fill="#6b4a32" />
-        <g transform="translate(55 -112)">
-          <polygon points="0,4 16,4 16,16 0,16" fill="var(--data)" />
-          <polygon points="0,4 4,0 20,0 16,4" fill="var(--data)" /><polygon points="0,4 4,0 20,0 16,4" fill="#fff" opacity={.3} />
-          <polygon points="16,4 20,0 20,12 16,16" fill="var(--data)" /><polygon points="16,4 20,0 20,12 16,16" fill="#000" opacity={.3} />
-        </g>
+        <g transform="translate(55 -112)"><polygon points="0,4 16,4 16,16 0,16" fill="var(--data)" /><polygon points="0,4 4,0 20,0 16,4" fill="#7fd6cb" /><polygon points="16,4 20,0 20,12 16,16" fill="#2c8a7d" /></g>
+        <text x={30} y={18} textAnchor="middle" style={{ fill: 'var(--good)', font: '600 11px var(--sans)' }}>✓ à hauteur de taille</text>
       </g>
       {/* structures */}
       {ZONES.map((z, u) => {

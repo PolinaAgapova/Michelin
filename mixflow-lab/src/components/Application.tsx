@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { DATA, expiresSoon, inStock, isExpired, type Lot, type Mouvement } from '../data/lab';
+import { AppShowcase } from './AppShowcase';
 
 type Screen = 'home' | 'scan' | 'fiche' | 'prelever' | 'deplacer' | 'fin';
 const NOTES: Record<Screen, [string, string]> = {
@@ -62,6 +63,8 @@ export function Application() {
         </div>
         <span className="hypo">Démonstration : les modifications ne sont pas enregistrées</span>
       </div>
+      <AppShowcase />
+      <h2 className="label" style={{ margin: '28px 0 12px' }}>À vous d’essayer : le prototype cliquable</h2>
       <div className="proto">
         <div className="phone" aria-label="Prototype de l’application mobile">
           <div className="screen">

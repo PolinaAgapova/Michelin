@@ -58,7 +58,7 @@ export function Stockage() {
           </div>
         </header>
         <Magasin3D placement={where} color={color} playing={playing} label={l => `${l.num} · ${l.melange} · ${where(l)} · ${p.get(l.num) ?? 0} prélèvement(s) en 60 j · ${isExpired(l, DATA.ref) ? 'périmé' : 'classe ' + (cls.get(l.num) ?? 'C')}`} />
-        <p className="foot">Chaque bac est un lot. {after ? `Après réimplantation : les ${r.moves.length} lots les plus prélevés ont rejoint la zone Or, à hauteur de taille.` : 'Aujourd’hui : des lots très utilisés sont rangés en bas ou en haut, au fond des armoires.'} La silhouette donne l’échelle : la zone Or correspond aux gestes sans se baisser ni lever les bras.</p>
+        <p className="foot">Chaque bac est un lot. {after ? `Après réimplantation : les ${r.moves.length} lots les plus prélevés ont rejoint la zone Or, à hauteur de taille.` : 'Aujourd’hui : des lots très utilisés sont rangés en bas ou en haut, au fond des armoires.'} Les deux silhouettes montrent le même geste à deux hauteurs : la zone Or évite de se baisser ou de lever les bras.</p>
       </section>
 
       <div className="zones">

@@ -13,7 +13,10 @@ Chaque section répond à une mission de l’offre.
 | Traçabilité fiable sur tout le cycle de vie | 4 · Traçabilité | Historique de chaque lot, contrôles de cohérence des données |
 | Déployer, communiquer, former | 5 · Déploiement | Plan sur 6 mois, indicateurs, accompagnement des utilisateurs |
 
-## Kit Power Apps (`powerapps/`)
+## Application mobile (`scan/`)
+Application autonome (un seul fichier HTML, données et décodeur QR intégrés) : scan d’une étiquette par photo, prélèvement, déplacement, fin de vie, alertes de péremption, contrôles de cohérence affichés au scan. Construire : `python3 scan/build.py` → `dist-single/mixflow-scan.html`. Décodeur : jsQR 1.4.0 (Apache 2.0, `scan/vendor/`).
+
+## Kit Power Apps (`powerapps/`, préparation)
 - `GUIDE.md` : construire l’application dans Power Apps pas à pas (formules Power Fx en notation française, alerte Power Automate).
 - `MixflowLab.xlsx` : 4 tableaux Excel prêts à connecter (Melanges, Emplacements, Lots, Mouvements).
 - `Etiquettes_QR.pdf` : étiquettes de lots avec QR code, vérifiées par décodage automatique.

@@ -1,0 +1,214 @@
+<title>MIXFLOW Scan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<script>/* jsQR 1.4.0 — Apache License 2.0 — https://github.com/cozmo/jsQR */
+__JSQR__</script>
+<style>
+  /* Application mobile de démonstration : un seul thème clair, toutes les couleurs explicites. */
+  :root { --bg:#eef1f4; --card:#ffffff; --ink:#131a22; --ink2:#5a6573; --line:#dde2e8; --brand:#0f6b5c; --brand2:#e3f1ee; --bad:#b42318; --badbg:#fde8e7; --warn:#a15c07; --warnbg:#fdf1dc; --good:#1f7a4d; color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "IBM Plex Sans", system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 520px; margin: 0 auto; min-height: 100%; padding: 0 max(14px, env(safe-area-inset-right, 0px)) 40px max(14px, env(safe-area-inset-left, 0px)); }
+  header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--brand); color: #fff; margin: 0 calc(-1 * max(14px, env(safe-area-inset-left, 0px))); padding: 12px max(14px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 10px; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--brand); z-index: 6; }
+  header button { all: unset; cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 8px 2px 0; }
+  header h1 { font-size: 17px; margin: 0; font-weight: 600; }
+  header small { margin-left: auto; font: 500 10px "IBM Plex Mono", monospace; letter-spacing: .08em; opacity: .85; }
+  .note { font: 500 11px "IBM Plex Mono", monospace; color: var(--ink2); text-align: center; padding: 8px 0 2px; }
+  main { display: grid; gap: 10px; padding-top: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .alert { background: var(--badbg); color: var(--bad); border-radius: 12px; padding: 12px 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .alert button { all: unset; cursor: pointer; font-size: 13px; text-decoration: underline; }
+  .btn { display: block; width: 100%; border: 0; border-radius: 12px; padding: 15px; font: 600 16px inherit; font-family: inherit; cursor: pointer; text-align: center; background: var(--brand); color: #fff; }
+  .btn.alt { background: var(--brand2); color: var(--brand); }
+  .btn.danger { background: var(--bad); color: #fff; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  input, select { width: 100%; font: 500 16px inherit; font-family: inherit; color: var(--ink); background: #fff; border: 1px solid #c7ced6; border-radius: 10px; padding: 12px; }
+  label { font-size: 13px; color: var(--ink2); display: grid; gap: 6px; }
+  .lot { all: unset; cursor: pointer; display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  .lot:focus-visible, .btn:focus-visible, header button:focus-visible { outline: 3px solid #f2b33d; outline-offset: 2px; }
+  .lot .bar { width: 6px; height: 36px; border-radius: 3px; }
+  .lot b { font-size: 15px; }
+  .muted { color: var(--ink2); font-size: 13px; }
+  .kv { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 4px 10px; font-size: 14px; margin-top: 8px; }
+  .kv span:nth-child(odd) { color: var(--ink2); }
+  .tag { display: inline-block; font: 500 11px "IBM Plex Mono", monospace; padding: 3px 7px; border-radius: 5px; }
+  .tag.bad { background: var(--badbg); color: var(--bad); } .tag.warn { background: var(--warnbg); color: var(--warn); } .tag.ok { background: #e3f3ea; color: var(--good); } .tag.off { background: #e9edf1; color: var(--ink2); }
+  .ev { border-left: 2px solid var(--line); padding: 0 0 10px 12px; margin-left: 4px; font-size: 13.5px; position: relative; }
+  .ev::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--brand); }
+  .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); width: min(480px, calc(100% - 28px)); border-radius: 12px; padding: 13px 15px; color: #fff; font-weight: 500; z-index: 20; box-shadow: 0 10px 30px -10px rgba(0,0,0,.4); }
+  .scanbox { border: 2px dashed #9fb0bf; border-radius: 14px; padding: 18px; text-align: center; display: grid; gap: 10px; background: #fff; }
+  .hidden { display: none !important; }
+  @media (prefers-reduced-motion: no-preference) { .toast { animation: up .2s ease-out; } @keyframes up { from { transform: translate(-50%, 10px); opacity: 0; } } }
+</style>
+
+<div class="wrap">
+  <header><button id="back" type="button" aria-label="Retour" class="hidden">‹</button><h1 id="title">MIXFLOW Scan</h1><small>DÉMO</small></header>
+  <p class="note">Prototype personnel · données 100 % fictives · non affilié à Michelin</p>
+  <main id="app" aria-live="polite"></main>
+  <input id="photo" type="file" accept="image/*" capture="environment" class="hidden" aria-hidden="true">
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+const SEED = __DATASET__;
+const KEY = 'mixflow-scan-v1';
+const REF = SEED.ref;
+const mel = Object.fromEntries(SEED.melanges.map(m => [m.code, m]));
+const emp = Object.fromEntries(SEED.emplacements.map(e => [e.code, e]));
+let S = load();
+let view = { s: 'home', lot: null, q: '' };
+
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+  return { lots: SEED.lots.map(l => ({ ...l })), mouvements: SEED.mouvements.slice() };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const today = () => new Date().toISOString().slice(0, 10);
+const inStock = l => l.statut !== 'Détruit' && l.statut !== 'Épuisé';
+const addDays = (iso, n) => new Date(Date.parse(iso) + n * 864e5).toISOString().slice(0, 10);
+const expired = l => inStock(l) && l.peremption < REF;
+const soon = l => inStock(l) && l.peremption >= REF && l.peremption <= addDays(REF, 7);
+const tone = l => !inStock(l) ? 'off' : expired(l) ? 'bad' : soon(l) ? 'warn' : 'ok';
+const toneColor = { bad: '#b42318', warn: '#c27803', ok: '#1f7a4d', off: '#9aa5b1' };
+const lotBy = n => S.lots.find(l => l.num === n);
+const fmtKg = x => (Math.round(x * 10) / 10).toLocaleString('fr-FR') + ' kg';
+let toastT;
+function toast(msg, ok = true) { const t = document.getElementById('toast'); t.textContent = msg; t.style.background = ok ? '#1f7a4d' : '#b42318'; t.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add('hidden'), 2600); }
+function log(m) { S.mouvements.push({ id: 'MV-APP-' + (S.mouvements.length + 1), date: today(), user: 'Démo', commentaire: null, ...m }); }
+function go(s, lot) { view = { ...view, s, lot: lot ?? view.lot }; render(); window.scrollTo(0, 0); }
+
+/* ---------- scan : photo prise par l'appareil, QR décodé dans la page ---------- */
+const photo = document.getElementById('photo');
+photo.addEventListener('change', async () => {
+  const f = photo.files && photo.files[0]; photo.value = '';
+  if (!f) return;
+  toast('Lecture du QR code…');
+  try {
+    const code = await decode(f);
+    if (!code) { toast('QR code non lu : reprenez la photo plus près, bien éclairée.', false); return; }
+    const l = lotBy(code.trim());
+    if (!l) { toast('Code lu (' + code + ') mais lot inconnu.', false); return; }
+    toast('Lot ' + l.num + ' identifié'); go('fiche', l.num);
+  } catch (e) { toast('Image illisible, réessayez.', false); }
+});
+async function decode(file) {
+  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+  for (const max of [1200, 800, 1800]) {
+    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d', { willReadFrequently: true }); ctx.drawImage(img, 0, 0, w, h);
+    if (typeof jsQR !== 'function') throw new Error('jsQR indisponible');
+    const r = jsQR(ctx.getImageData(0, 0, w, h).data, w, h, { inversionAttempts: 'attemptBoth' });
+    if (r && r.data) return r.data;
+  }
+  return null;
+}
+
+/* ---------- écrans ---------- */
+function render() {
+  const app = document.getElementById('app'), back = document.getElementById('back'), title = document.getElementById('title');
+  back.classList.toggle('hidden', view.s === 'home');
+  const l = view.lot ? lotBy(view.lot) : null;
+  const titles = { home: 'MIXFLOW Scan', alertes: 'Lots à traiter', fiche: l ? l.num : 'Lot', prelever: 'Prélever', deplacer: 'Déplacer', fin: 'Fin de vie' };
+  title.textContent = titles[view.s];
+  if (view.s === 'home') {
+    const exp = S.lots.filter(expired), so = S.lots.filter(soon);
+    const q = view.q.toLowerCase();
+    const list = S.lots.filter(x => inStock(x) && (!q || (x.num + ' ' + x.melange + ' ' + (x.emplacement || '') + ' ' + mel[x.melange].libelle).toLowerCase().includes(q))).sort((a, b) => a.peremption.localeCompare(b.peremption)).slice(0, 40);
+    app.innerHTML = `
+      ${exp.length ? `<div class="alert"><span>${exp.length} lot(s) périmé(s) encore en stock${so.length ? ` · ${so.length} sous 7 j` : ''}</span><button type="button" data-a="alertes">Voir</button></div>` : ''}
+      <button class="btn" type="button" data-a="scan">📷 Scanner une étiquette</button>
+      <input type="search" id="q" placeholder="Rechercher : lot, mélange, emplacement" value="${esc(view.q)}" aria-label="Rechercher un lot">
+      <div class="muted">${list.length} lot(s) affiché(s), du plus proche de la péremption au plus lointain</div>
+      ${list.map(rowHtml).join('') || '<div class="card muted">Aucun lot ne correspond.</div>'}
+      <button class="btn alt" type="button" data-a="reset" style="margin-top:14px">Réinitialiser la démonstration</button>`;
+    const qi = document.getElementById('q');
+    qi.addEventListener('input', () => { view.q = qi.value; const pos = qi.selectionStart; render(); const n = document.getElementById('q'); n.focus(); n.setSelectionRange(pos, pos); });
+  } else if (view.s === 'alertes') {
+    const list = S.lots.filter(x => expired(x) || soon(x)).sort((a, b) => a.peremption.localeCompare(b.peremption));
+    app.innerHTML = `<div class="muted">Périmés en rouge, à déclarer en fin de vie ; en orange, à utiliser en priorité (FEFO).</div>${list.map(rowHtml).join('') || '<div class="card muted">Rien à traiter.</div>'}`;
+  } else if (view.s === 'fiche' && l) {
+    const m = mel[l.melange], t = tone(l);
+    const hist = S.mouvements.filter(x => x.lot === l.num).slice().reverse();
+    // contrôles de cohérence affichés au scan : c'est là que la traçabilité devient fiable
+    const warns = [];
+    const e = l.emplacement ? emp[l.emplacement] : null;
+    if (inStock(l) && e && e.conservation !== m.conservation) warns.push(`Conservation non respectée : ${m.conservation} exigé, rangé en ${e.conservation.toLowerCase()}.`);
+    const lastPlace = hist.find(h => h.type === 'Rangement' || h.type === 'Déplacement');
+    if (inStock(l) && lastPlace && l.emplacement && lastPlace.vers !== l.emplacement) warns.push(`Déplacement non tracé : dernier mouvement vers ${lastPlace.vers}, lot trouvé en ${l.emplacement}.`);
+    const used = hist.filter(h => h.type === 'Prélèvement').reduce((a, h) => a + h.qte, 0);
+    if (inStock(l) && Math.abs(l.qteInit - used - l.qteReste) > .05) warns.push(`Stock incohérent : ${fmtKg(l.qteReste)} déclarés, ${fmtKg(l.qteInit - used)} attendus d’après l’historique.`);
+    app.innerHTML = `
+      ${warns.map(w => `<div class="alert" style="background:#fdf1dc;color:#7a4705;font-weight:500">⚠ ${esc(w)}</div>`).join('')}
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:19px">${esc(l.num)}</b><span class="tag ${t}">${expired(l) ? 'PÉRIMÉ' : esc(l.statut)}</span></div>
+        <div class="muted">${esc(m.code)} · ${esc(m.libelle)}</div>
+        <div class="kv">
+          <span>Emplacement</span><span><b>${esc(l.emplacement || '—')}</b>${l.emplacement && emp[l.emplacement] ? ` · zone ${esc(emp[l.emplacement].ergo)}` : ''}</span>
+          <span>Reste</span><span><b>${fmtKg(l.qteReste)}</b> sur ${fmtKg(l.qteInit)}</span>
+          <span>Péremption</span><span style="color:${toneColor[t]}"><b>${esc(l.peremption)}</b></span>
+          <span>Conservation</span><span>${esc(m.conservation)}</span>
+          <span>Demandeur</span><span>${esc(l.labo)}</span>
+        </div>
+      </div>
+      ${inStock(l) ? `<div class="row2"><button class="btn" type="button" data-a="prelever" ${expired(l) || l.qteReste <= 0 ? 'disabled' : ''}>Prélever</button><button class="btn alt" type="button" data-a="deplacer">Déplacer</button></div>
+      <button class="btn danger" type="button" data-a="fin">Fin de vie</button>` : ''}
+      ${expired(l) ? '<div class="muted">Lot périmé : prélèvement bloqué, fin de vie à déclarer.</div>' : ''}
+      <div class="card"><b>Historique</b><div style="margin-top:10px">${hist.map(h => `<div class="ev"><b>${esc(h.type)}</b>${h.qte ? ' · ' + fmtKg(h.qte) : ''}${h.vers ? ' → ' + esc(h.vers) : ''}<br><span class="muted">${esc(h.date)} · ${esc(h.user)}${h.commentaire ? ' · ' + esc(h.commentaire) : ''}</span></div>`).join('')}</div></div>`;
+  } else if (view.s === 'prelever' && l) {
+    app.innerHTML = `
+      <div class="card"><b>${esc(l.num)}</b> · reste <b>${fmtKg(l.qteReste)}</b></div>
+      <label>Quantité prélevée (kg)<input id="qte" inputmode="decimal" placeholder="ex. 0,5" autocomplete="off"></label>
+      <label>Commentaire (facultatif)<input id="com" placeholder="ex. éprouvettes traction"></label>
+      <button class="btn" type="button" data-a="ok-prelever">Valider le prélèvement</button>`;
+    setTimeout(() => document.getElementById('qte')?.focus(), 50);
+  } else if (view.s === 'deplacer' && l) {
+    const cons = mel[l.melange].conservation;
+    const opts = SEED.emplacements.filter(e => e.conservation === cons && e.code !== l.emplacement).sort((a, b) => (a.ergo === 'Or' ? 0 : 1) - (b.ergo === 'Or' ? 0 : 1) || a.code.localeCompare(b.code));
+    app.innerHTML = `
+      <div class="card"><b>${esc(l.num)}</b> · conservation <b>${esc(cons)}</b><div class="muted">Seuls les emplacements compatibles sont proposés. Zone Or = niveaux 2 et 3, à hauteur de taille.</div></div>
+      <label>Nouvel emplacement<select id="dest">${opts.map(e => `<option value="${esc(e.code)}">${esc(e.code)} · zone ${esc(e.ergo)}</option>`).join('')}</select></label>
+      <button class="btn" type="button" data-a="ok-deplacer">Valider le déplacement</button>`;
+  } else if (view.s === 'fin' && l) {
+    app.innerHTML = `
+      <div class="card"><b>Confirmer la fin de vie du lot ${esc(l.num)} ?</b><div class="muted">${fmtKg(l.qteReste)} · motif enregistré : ${expired(l) ? 'péremption' : 'fin d’usage'}.</div></div>
+      <button class="btn danger" type="button" data-a="ok-fin">Confirmer</button>
+      <button class="btn alt" type="button" data-a="fiche">Annuler</button>`;
+  } else { view.s = 'home'; render(); }
+}
+function rowHtml(x) {
+  const t = tone(x);
+  return `<button class="lot" type="button" data-lot="${esc(x.num)}"><span class="bar" style="background:${toneColor[t]}"></span><span><b>${esc(x.num)}</b> · ${esc(x.melange)}<br><span class="muted">${esc(x.emplacement || '—')} · ${fmtKg(x.qteReste)} · ${esc(x.peremption)}</span></span><span class="tag ${t}">${expired(x) ? 'périmé' : soon(x) ? '< 7 j' : 'ok'}</span></button>`;
+}
+
+/* ---------- actions ---------- */
+document.addEventListener('click', e => {
+  const lb = e.target.closest('[data-lot]'); if (lb) { go('fiche', lb.dataset.lot); return; }
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const a = b.dataset.a, l = view.lot ? lotBy(view.lot) : null;
+  if (a === 'scan') photo.click();
+  else if (a === 'alertes' || a === 'prelever' || a === 'deplacer' || a === 'fin' || a === 'fiche') go(a);
+  else if (a === 'reset') { S = { lots: SEED.lots.map(x => ({ ...x })), mouvements: SEED.mouvements.slice() }; save(); view.q = ''; render(); toast('Démonstration réinitialisée'); }
+  else if (a === 'ok-prelever' && l) {
+    const v = Number(String(document.getElementById('qte').value).replace(',', '.'));
+    if (!(v > 0) || v > l.qteReste + 1e-9) { toast('Quantité invalide : entre 0 et ' + fmtKg(l.qteReste), false); return; }
+    l.qteReste = Math.round((l.qteReste - v) * 10) / 10; if (l.qteReste <= 0) l.statut = 'Épuisé';
+    log({ lot: l.num, type: 'Prélèvement', qte: v, de: l.emplacement, vers: null, commentaire: document.getElementById('com').value || null });
+    save(); toast('Prélèvement enregistré'); go('fiche');
+  } else if (a === 'ok-deplacer' && l) {
+    const d = document.getElementById('dest').value; if (!d) return;
+    log({ lot: l.num, type: 'Déplacement', qte: l.qteReste, de: l.emplacement, vers: d }); l.emplacement = d;
+    save(); toast('Lot déplacé vers ' + d); go('fiche');
+  } else if (a === 'ok-fin' && l) {
+    log({ lot: l.num, type: 'Fin de vie', qte: l.qteReste, de: l.emplacement, vers: 'Benne déchets', commentaire: expired(l) ? 'Péremption' : 'Fin d’usage' });
+    l.statut = 'Détruit'; l.qteReste = 0; l.emplacement = null;
+    save(); toast('Fin de vie enregistrée'); go('home', null);
+  }
+});
+document.getElementById('back').addEventListener('click', () => go(view.s === 'fiche' || view.s === 'alertes' ? 'home' : 'fiche'));
+render();
+</script>

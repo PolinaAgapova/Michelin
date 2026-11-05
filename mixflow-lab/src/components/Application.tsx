@@ -58,7 +58,7 @@ export function Application() {
         <div>
           <div className="kicker">Mission 03 · Digitaliser la gestion des stocks</div>
           <h1>Deux gestes pour tracer un prélèvement : scanner, saisir</h1>
-          <p>Prototype cliquable du parcours mobile, sur les mêmes données. Je le reconstruis dans Power Apps, l’outil cité dans l’offre.</p>
+          <p>Prototype cliquable du parcours mobile. Une version utilisable sur téléphone, qui scanne réellement les étiquettes QR des lots, est disponible : <a href="https://claude.ai/artifact/XPXGo2yF9hJHMgcWXJAL8P" target="_blank" rel="noopener noreferrer">ouvrir l’application de démonstration</a>.</p>
         </div>
         <span className="hypo">Démonstration : les modifications ne sont pas enregistrées</span>
       </div>
@@ -122,8 +122,8 @@ export function Application() {
         <div className="stack" style={{ gap: 14 }}>
           <section className="panel" aria-live="polite"><span className="label">Écran affiché</span><h3 style={{ margin: '4px 0 6px' }}>{NOTES[screen][0]}</h3><p className="small muted">{NOTES[screen][1]}</p></section>
           <section className="panel">
-            <header><h3>La même application dans Power Apps</h3></header>
-            <p className="small muted">Je reconstruis ce parcours dans Power Apps avec mon compte universitaire : application canevas, données dans Excel Online, scan avec le lecteur de codes-barres, alerte quotidienne par Power Automate. Le guide pas à pas, les données et les étiquettes QR sont dans le dépôt du projet.</p>
+            <header><h3>Passage à Power Apps : préparé</h3></header>
+            <p className="small muted">L’offre cite Power Apps. Le passage est préparé : modèle de données en quatre tables, formules Power Fx des écrans, alerte quotidienne par Power Automate. Je le construirais avec l’équipe et l’informatique, sur la source de données qu’elles utilisent.</p>
             <div className="tbl" style={{ marginTop: 10 }}><table style={{ minWidth: 0 }}>
               <thead><tr><th>Table</th><th>Rôle</th></tr></thead>
               <tbody>

@@ -10,7 +10,7 @@ export function Synthese() {
   const missions = [
     { k: '01', m: 'Analyser et cartographier les flux', r: 'flux', what: 'Cycle complet, de la commande à la fin de vie, avec les données de chaque étape.' },
     { k: '02', m: 'Optimiser le stockage (terrain, ergonomie)', r: 'stockage', what: 'Plan des armoires, classes ABC, pénibilité des prélèvements, réimplantation simulée.' },
-    { k: '03', m: 'Digitaliser la gestion des stocks (Power Apps)', r: 'application', what: 'Parcours mobile scan → fiche → prélèvement, reconstruit dans Power Apps.' },
+    { k: '03', m: 'Digitaliser la gestion des stocks (Power Apps)', r: 'application', what: 'Application mobile qui scanne les étiquettes QR ; passage à Power Apps préparé.' },
     { k: '04', m: 'Traçabilité fiable sur tout le cycle de vie', r: 'tracabilite', what: 'Historique de chaque lot et contrôles de cohérence des données.' },
     { k: '05', m: 'Déployer, communiquer, former', r: 'deploiement', what: 'Plan sur 6 mois, kit de formation, indicateurs d’adoption.' },
   ];

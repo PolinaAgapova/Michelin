@@ -263,3 +263,6 @@ select, input[type=number] { font: 500 13.5px var(--sans); color: var(--ink); ba
 .screen .muted2 { color: #5f6675; font-size: 12.5px; }
 .split2 { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 14px; align-items: start; }
 @media (max-width: 900px) { .split2 { grid-template-columns: minmax(0, 1fr); } }
+.iso { max-height: 420px; }
+.iso text { font: 500 10.5px var(--mono); }
+@keyframes flowdash { to { stroke-dashoffset: -24; } }

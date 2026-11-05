@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DATA, LEVEL_COST, ZONE_FACTOR, abc, expiresSoon, inStock, isExpired, picks, reslot, slotCost, type Lot } from '../data/lab';
 import { fmt, pct } from './charts';
+import { Magasin3D, useReplay } from './Magasin3D';
 
 type Mode = 'rotation' | 'peremption';
 const ZONES = [['A', 'Armoire froide A'], ['B', 'Armoire froide B'], ['C', 'Rack ambiant C'], ['D', 'Rack ambiant D']];
@@ -9,6 +10,7 @@ export function Stockage() {
   const [mode, setMode] = useState<Mode>('rotation');
   const [budget, setBudget] = useState(10);
   const [after, setAfter] = useState(false);
+  const { playing, replay, setPlaying } = useReplay(setAfter);
   const p = useMemo(() => picks(DATA), []);
   const cls = useMemo(() => abc(DATA, p), [p]);
   const r = useMemo(() => reslot(DATA, budget, p), [budget, p]);
@@ -47,6 +49,17 @@ export function Stockage() {
           <span><i style={{ background: 'var(--bad)', height: 10, width: 10 }} />Périmé</span><span style={{ color: 'var(--amber)' }}>N2–N3 : zone Or</span>
         </div>
       </div>
+
+      <section className="panel" style={{ marginBottom: 14 }}>
+        <header><h3>Le magasin, vu en perspective</h3>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button type="button" className="btn primary" onClick={replay}>▶ Rejouer la réimplantation</button>
+            <button type="button" className="btn ghost" onClick={() => { setPlaying(true); setAfter(!after); window.setTimeout(() => setPlaying(false), 1300); }}>{after ? 'Revenir à aujourd’hui' : 'Voir après'}</button>
+          </div>
+        </header>
+        <Magasin3D placement={where} color={color} playing={playing} label={l => `${l.num} · ${l.melange} · ${where(l)} · ${p.get(l.num) ?? 0} prélèvement(s) en 60 j · ${isExpired(l, DATA.ref) ? 'périmé' : 'classe ' + (cls.get(l.num) ?? 'C')}`} />
+        <p className="foot">Chaque bac est un lot. {after ? `Après réimplantation : les ${r.moves.length} lots les plus prélevés ont rejoint la zone Or, à hauteur de taille.` : 'Aujourd’hui : des lots très utilisés sont rangés en bas ou en haut, au fond des armoires.'} La silhouette donne l’échelle : la zone Or correspond aux gestes sans se baisser ni lever les bras.</p>
+      </section>
 
       <div className="zones">
         {ZONES.map(([z, name]) => (

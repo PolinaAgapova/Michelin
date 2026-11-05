@@ -53,9 +53,22 @@ export function Flux() {
   const W = 1110, LH = 78, T = 10, BW = 136, BH = 52;
   const y = (lane: number) => T + lane * LH + (LH - BH) / 2;
   const color = { ok: 'var(--line-2)', warn: 'var(--amber)', bad: 'var(--bad)' };
-  const arrow = (a: Step, b: Step) => {
+  // des « lots » circulent le long des flèches ; rouges sur le chemin de la destruction (désactivé si mouvement réduit)
+  const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const arrow = (a: Step, b: Step, i: number) => {
     const x1 = a.x + BW, y1 = y(a.lane) + BH / 2, x2 = b.x, y2 = y(b.lane) + BH / 2, mx = (x1 + x2) / 2;
-    return <path key={a.id + b.id} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2 - 6},${y2}`} fill="none" stroke="var(--ink-3)" strokeWidth={1.5} markerEnd="url(#arr)" />;
+    const d = `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2 - 6},${y2}`;
+    const waste = b.id === 'destruction';
+    return (
+      <g key={a.id + b.id}>
+        <path d={d} fill="none" stroke="var(--ink-3)" strokeWidth={1.5} markerEnd="url(#arr)" />
+        {!reduced && [0, 1].map(k => (
+          <circle key={k} r={waste ? 3.6 : 3} fill={waste ? 'var(--bad)' : 'var(--data)'} opacity={.9}>
+            <animateMotion dur={`${waste ? 2.4 : 1.8}s`} repeatCount="indefinite" begin={`${(i * .37 + k * (waste ? 1.2 : .9)) % 2}s`} path={d} />
+          </circle>
+        ))}
+      </g>
+    );
   };
   const by = (id: string) => STEPS.find(x => x.id === id)!;
 
@@ -73,7 +86,7 @@ export function Flux() {
         <svg className="chart flow" viewBox={`0 0 ${W} ${T + LANES.length * LH + 10}`} role="group" aria-label="Cartographie des flux par acteur" style={{ minWidth: 900 }}>
           <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)" /></marker></defs>
           {LANES.map((l, i) => <g key={l}><rect x={0} y={T + i * LH} width={W} height={LH} fill={i % 2 ? 'transparent' : 'rgba(255,255,255,.02)'} /><line x1={0} x2={W} y1={T + i * LH} y2={T + i * LH} stroke="var(--line)" /></g>)}
-          {[['demande', 'fabrication'], ['fabrication', 'reception'], ['reception', 'rangement'], ['rangement', 'stockage'], ['stockage', 'prelevement'], ['prelevement', 'epuise'], ['stockage', 'destruction']].map(([a, b]) => arrow(by(a), by(b)))}
+          {[['demande', 'fabrication'], ['fabrication', 'reception'], ['reception', 'rangement'], ['rangement', 'stockage'], ['stockage', 'prelevement'], ['prelevement', 'epuise'], ['stockage', 'destruction']].map(([a, b], i) => arrow(by(a), by(b), i))}
           {STEPS.map(st => (
             <g key={st.id} className="step" role="button" tabIndex={0} aria-pressed={sel === st.id} aria-label={`${st.title} : ${st.metric}`} style={{ cursor: 'pointer' }}
               onClick={() => setSel(st.id)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(st.id); } }}>

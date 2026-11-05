@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Stats } from './Hero';
-import { DATA, expiresSoon, inStock, isExpired, type Lot, type Mouvement } from '../data/lab';
+import { DATA, days, expiresSoon, inStock, isExpired, type Lot, type Mouvement } from '../data/lab';
+import { fmt } from './charts';
 import { AppShowcase } from './AppShowcase';
 
 type Screen = 'home' | 'scan' | 'fiche' | 'prelever' | 'deplacer' | 'fin';
@@ -19,6 +20,7 @@ export function Application() {
   const [screen, setScreen] = useState<Screen>('home');
   const [cur, setCur] = useState<string | null>(null);
   const [q, setQ] = useState('');
+  const [onlyExp, setOnlyExp] = useState(false);
   const [qty, setQty] = useState('');
   const [dest, setDest] = useState('');
   const [toast, setToast] = useState<{ t: string; ok: boolean } | null>(null);
@@ -28,10 +30,10 @@ export function Application() {
   const log = (m: Omit<Mouvement, 'id' | 'date' | 'user'>) => setMvts(xs => [...xs, { ...m, id: `MV-APP-${xs.length + 1}`, date: DATA.ref, user: 'Moi (démo)' }]);
   const update = (num: string, patch: Partial<Lot>) => setLots(xs => xs.map(l => (l.num === num ? { ...l, ...patch } : l)));
   const expiredCount = lots.filter(l => isExpired(l, DATA.ref)).length;
-  const list = lots.filter(l => inStock(l) && (!q || `${l.num} ${l.melange} ${l.emplacement}`.toLowerCase().includes(q.toLowerCase()))).slice(0, 30);
+  const list = lots.filter(l => inStock(l) && (!onlyExp || isExpired(l, DATA.ref)) && (!q || `${l.num} ${l.melange} ${l.emplacement}`.toLowerCase().includes(q.toLowerCase()))).slice(0, 30);
   const scanDemo = lots.filter(l => inStock(l)).slice(0, 4);
   const open = (num: string) => { setCur(num); setScreen('fiche'); };
-  const color = (l: Lot) => (isExpired(l, DATA.ref) ? '#b42318' : expiresSoon(l, DATA.ref) ? '#c27803' : '#1f7a4d');
+  const color = (l: Lot) => (!inStock(l) ? '#6b7480' : isExpired(l, DATA.ref) ? '#d92d20' : expiresSoon(l, DATA.ref) ? '#c27803' : '#0f8a6c');
 
   const prelever = () => {
     const v = Number(qty.replace(',', '.'));
@@ -73,58 +75,79 @@ export function Application() {
       <h2 className="label" style={{ margin: '28px 0 12px' }}>À vous d’essayer : le prototype cliquable</h2>
       <div className="proto">
         <div className="phone" aria-label="Prototype de l’application mobile">
+          <div className="ph-island" aria-hidden="true" />
           <div className="screen">
-            <div className="bar">{screen !== 'home' && <button type="button" onClick={back} aria-label="Retour">‹</button>}<span>{screen === 'home' ? 'MIXFLOW Lab' : NOTES[screen][0]}</span><small>DÉMO</small></div>
-            <div className="body">
+            <div className="sbar" aria-hidden="true"><span>9:41</span><span className="sbar-r"><i /><i /><i /><b /></span></div>
+            {toast && <div className={`toast ${toast.ok ? 'ok' : 'ko'}`} role="status"><span className="t-ic">{toast.ok ? '✓' : '!'}</span>{toast.t}</div>}
+            <div className="nav">
+              {screen !== 'home' ? <button type="button" onClick={back} aria-label="Retour" className="nav-back">‹</button> : <span className="nav-av" aria-hidden="true">PA</span>}
+              <div><small>{screen === 'home' ? 'Magasin mélanges · démo' : 'MIXFLOW Lab'}</small><b>{screen === 'home' ? 'Mon stock' : NOTES[screen][0]}</b></div>
+            </div>
+            <div className="body" key={screen}>
               {screen === 'home' && <>
-                <div className="alert" role="status">{expiredCount} lot(s) périmé(s) encore en stock</div>
-                <button type="button" className="pbtn" onClick={() => setScreen('scan')}>Scanner un lot</button>
-                <input type="search" placeholder="Lot, mélange, emplacement" value={q} onChange={e => setQ(e.target.value)} aria-label="Rechercher" />
-                {list.map(l => <button key={l.num} type="button" className="row" onClick={() => open(l.num)}><span style={{ width: 8, height: 30, borderRadius: 3, background: color(l) }} /><span><b>{l.num}</b> · {l.melange}<br /><span className="muted2">{l.emplacement} · {l.qteReste} kg · {l.peremption}</span></span></button>)}
+                <div className="hero-card">
+                  <div><small>Lots en stock</small><b>{lots.filter(inStock).length}</b><span>{fmt(lots.filter(inStock).reduce((x, l) => x + l.qteReste, 0))} kg disponibles</span></div>
+                  <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" /><circle cx="22" cy="22" r="18" className="hc-v" style={{ strokeDasharray: 113, strokeDashoffset: 113 * (expiredCount / Math.max(1, lots.filter(inStock).length)) }} /></svg>
+                </div>
+                <button type="button" className={`alert ${onlyExp ? 'on' : ''}`} aria-pressed={onlyExp} onClick={() => setOnlyExp(!onlyExp)}>
+                  <span className="a-ic" aria-hidden="true">!</span><span><b>{expiredCount} lot(s) périmé(s) encore en stock</b><br /><small>{onlyExp ? 'Afficher tous les lots' : 'Toucher pour les afficher'}</small></span>
+                </button>
+                <label className="srch"><span aria-hidden="true">⌕</span><input type="search" placeholder="Lot, mélange, emplacement" value={q} onChange={e => setQ(e.target.value)} aria-label="Rechercher" /></label>
+                {list.map(l => { const d = days(DATA.ref, l.peremption); return (
+                  <button key={l.num} type="button" className="row" onClick={() => open(l.num)}>
+                    <span className={`zone z-${l.emplacement?.[0]}`}>{l.emplacement?.[0]}</span>
+                    <span className="r-main"><b>{l.num}</b><span className="muted2">{l.melange} · {l.emplacement} · {l.qteReste} kg</span></span>
+                    <span className="pill" style={{ color: color(l), background: `${color(l)}1a` }}>{d < 0 ? 'Périmé' : `J-${d}`}</span>
+                  </button>); })}
               </>}
               {screen === 'scan' && <>
-                <div className="card" style={{ height: 150, display: 'grid', placeItems: 'center', background: '#14181f', color: '#fff' }}>Caméra (simulée)</div>
-                <p className="muted2">Choisissez l’étiquette à « scanner » :</p>
-                {scanDemo.map(l => <button key={l.num} type="button" className="pbtn alt" onClick={() => open(l.num)}>▣ {l.num}</button>)}
+                <div className="cam" aria-hidden="true"><i /><i /><i /><i /><span className="cam-beam" /><span className="cam-t">Visez l’étiquette QR</span></div>
+                <p className="muted2">Démonstration : choisissez l’étiquette à « scanner »</p>
+                <div className="chips">{scanDemo.map(l => <button key={l.num} type="button" className="pbtn alt" onClick={() => open(l.num)}><span aria-hidden="true">▦</span> {l.num}</button>)}</div>
               </>}
               {screen === 'fiche' && lot && <>
-                <div className="card"><b style={{ fontSize: 17 }}>{lot.num}</b><br /><span className="muted2">{mel.get(lot.melange)!.libelle}</span>
-                  <div style={{ marginTop: 8, display: 'grid', gap: 2, fontSize: 13 }}>
-                    <span>Emplacement : <b>{lot.emplacement ?? '—'}</b></span><span>Reste : <b>{lot.qteReste} kg</b> / {lot.qteInit} kg</span>
-                    <span style={{ color: color(lot) }}>Péremption : <b>{lot.peremption}</b>{isExpired(lot, DATA.ref) ? ' · PÉRIMÉ' : ''}</span>
-                    <span>Conservation : {mel.get(lot.melange)!.conservation}</span>
-                  </div>
+                <div className="lot-card" style={{ ['--lc' as string]: color(lot) }}>
+                  <div className="lc-top"><b>{lot.num}</b><span className="pill" style={{ color: color(lot), background: `${color(lot)}1f` }}>{!inStock(lot) ? lot.statut : isExpired(lot, DATA.ref) ? 'Périmé' : `J-${days(DATA.ref, lot.peremption)}`}</span></div>
+                  <span className="muted2">{mel.get(lot.melange)!.libelle}</span>
+                  <div className="qbar"><span style={{ width: `${(lot.qteReste / lot.qteInit) * 100}%` }} /></div>
+                  <span className="qlbl"><b>{lot.qteReste} kg</b> restants sur {lot.qteInit} kg</span>
                 </div>
-                {inStock(lot) && <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-                  <button type="button" className="pbtn" onClick={() => setScreen('prelever')} disabled={isExpired(lot, DATA.ref)} style={isExpired(lot, DATA.ref) ? { opacity: .4, cursor: 'not-allowed' } : undefined}>Prélever</button>
+                <div className="tiles">
+                  <div><small>Emplacement</small><b>{lot.emplacement ?? '—'}</b></div>
+                  <div><small>Conservation</small><b>{mel.get(lot.melange)!.conservation}</b></div>
+                  <div><small>Péremption</small><b style={{ color: color(lot) }}>{lot.peremption}</b></div>
+                  <div><small>Labo</small><b>{lot.labo}</b></div>
+                </div>
+                {inStock(lot) && <div className="acts">
+                  <button type="button" className="pbtn" onClick={() => setScreen('prelever')} disabled={isExpired(lot, DATA.ref)}>Prélever</button>
                   <button type="button" className="pbtn alt" onClick={() => { setDest(compat[0]?.code ?? ''); setScreen('deplacer'); }}>Déplacer</button>
-                  <button type="button" className="pbtn danger" style={{ gridColumn: '1 / -1' }} onClick={() => setScreen('fin')}>Fin de vie</button>
+                  <button type="button" className="pbtn danger" onClick={() => setScreen('fin')}>Fin de vie</button>
                 </div>}
                 {isExpired(lot, DATA.ref) && <p className="muted2">Lot périmé : prélèvement bloqué, fin de vie à déclarer.</p>}
-                <b style={{ fontSize: 13 }}>Historique</b>
-                {mvts.filter(m => m.lot === lot.num).reverse().map(m => <div key={m.id} className="card" style={{ padding: '6px 10px', fontSize: 12.5 }}><b>{m.type}</b> · {m.qte} kg {m.vers ? `→ ${m.vers}` : ''}<br /><span className="muted2">{m.date} · {m.user}</span></div>)}
+                <b className="h-t">Historique</b>
+                <ol className="tl">{mvts.filter(m => m.lot === lot.num).reverse().map(m => <li key={m.id}><b>{m.type}</b> · {m.qte} kg {m.vers ? `→ ${m.vers}` : ''}<span className="muted2">{m.date} · {m.user}</span></li>)}</ol>
               </>}
               {screen === 'prelever' && lot && <>
-                <p>Lot <b>{lot.num}</b> · reste {lot.qteReste} kg</p>
+                <p className="muted2">Lot <b>{lot.num}</b> · reste {lot.qteReste} kg</p>
                 <label className="muted2" htmlFor="qty">Quantité prélevée (kg)</label>
-                <input id="qty" inputMode="decimal" value={qty} onChange={e => setQty(e.target.value)} placeholder="ex. 0,5" />
+                <div className="bigin"><input id="qty" inputMode="decimal" value={qty} onChange={e => setQty(e.target.value)} placeholder="0,0" /><span>kg</span></div>
+                <div className="chips">{['0,1', '0,5', '1'].map(v => <button key={v} type="button" className="chip" onClick={() => setQty(v)}>{v} kg</button>)}</div>
                 <button type="button" className="pbtn" onClick={prelever}>Valider</button>
               </>}
               {screen === 'deplacer' && lot && <>
-                <p>Lot <b>{lot.num}</b> · {mel.get(lot.melange)!.conservation}</p>
+                <p className="muted2">Lot <b>{lot.num}</b> · {mel.get(lot.melange)!.conservation}</p>
                 <label className="muted2" htmlFor="dest">Nouvel emplacement (compatibles uniquement)</label>
                 <select id="dest" value={dest} onChange={e => setDest(e.target.value)}>{compat.map(e => <option key={e.code} value={e.code}>{e.code} · zone {e.ergo}</option>)}</select>
                 <p className="muted2">Zone Or = niveaux 2 et 3, à hauteur de taille : à réserver aux lots les plus utilisés.</p>
                 <button type="button" className="pbtn" onClick={deplacer}>Valider</button>
               </>}
               {screen === 'fin' && lot && <>
-                <p>Confirmer la fin de vie du lot <b>{lot.num}</b> ({lot.qteReste} kg) ?</p>
-                <p className="muted2">Motif enregistré : {isExpired(lot, DATA.ref) ? 'péremption' : 'fin d’usage'}.</p>
+                <div className="confirm"><span className="a-ic big" aria-hidden="true">!</span><p>Confirmer la fin de vie du lot <b>{lot.num}</b> ({lot.qteReste} kg) ?</p><p className="muted2">Motif enregistré : {isExpired(lot, DATA.ref) ? 'péremption' : 'fin d’usage'}.</p></div>
                 <button type="button" className="pbtn danger" onClick={finDeVie}>Confirmer</button>
                 <button type="button" className="pbtn alt" onClick={() => setScreen('fiche')}>Annuler</button>
               </>}
             </div>
-            {toast && <div className="toast" role="status" style={{ background: toast.ok ? '#1f7a4d' : '#b42318' }}>{toast.t}</div>}
+            {screen === 'home' && <div className="tabbar"><span className="tb on" aria-hidden="true">⌂<small>Stock</small></span><button type="button" className="fab" onClick={() => setScreen('scan')} aria-label="Scanner un lot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16" /></svg></button><span className="tb" aria-hidden="true">◷<small>Historique</small></span></div>}
           </div>
         </div>
 

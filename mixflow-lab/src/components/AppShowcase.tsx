@@ -128,6 +128,9 @@ export function AppShowcase() {
     <section className="sc" aria-label="Démonstration animée de l’application">
       <div className="sc-stage">
         <div className="sc-glow" aria-hidden="true" />
+        <div className="sc-float f1" aria-hidden="true"><i />QR lu</div>
+        <div className="sc-float f2" aria-hidden="true"><i />Froid +4 °C</div>
+        <div className="sc-float f3" aria-hidden="true"><i /><b>J-5</b></div>
         <div className="sc-phone">
           <div className="sc-island" />
           <div className="sc-screen">

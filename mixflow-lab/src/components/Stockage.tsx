@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { DATA, LEVEL_COST, ZONE_FACTOR, abc, expiresSoon, inStock, isExpired, picks, reslot, slotCost, type Lot } from '../data/lab';
 import { fmt, pct } from './charts';
 import { Magasin3D, useReplay } from './Magasin3D';
+import { Stats } from './Hero';
 
 type Mode = 'rotation' | 'peremption';
 const ZONES = [['A', 'Armoire froide A'], ['B', 'Armoire froide B'], ['C', 'Rack ambiant C'], ['D', 'Rack ambiant D']];
@@ -27,10 +28,12 @@ export function Stockage() {
   const expired = stock.filter(l => isExpired(l, DATA.ref));
   const aInGold = stock.filter(l => cls.get(l.num) === 'A' && DATA.emplacements.find(e => e.code === where(l))?.ergo === 'Or').length;
   const aCount = [...cls.values()].filter(c => c === 'A').length;
+  const r10 = useMemo(() => reslot(DATA, 10, p), [p]);
+  const aGoldToday = stock.filter(l => cls.get(l.num) === 'A' && DATA.emplacements.find(e => e.code === l.emplacement)?.ergo === 'Or').length;
 
   return (
     <>
-      <div className="ph">
+      <div className="ph" data-n="02">
         <div>
           <div className="kicker">Mission 02 · Optimiser le stockage</div>
           <h1>Mettre les bons mélanges à la bonne hauteur</h1>
@@ -38,6 +41,11 @@ export function Stockage() {
         </div>
         <span className="hypo">Pénibilité : hypothèse à valider avec un ergonome</span>
       </div>
+      <Stats items={[
+        { value: aGoldToday, format: v => `${Math.round(v)} / ${aCount}`, label: 'lots très utilisés (A) rangés à hauteur de taille', tone: 'warn' },
+        { value: (1 - r10.after / r10.before) * 100, format: v => `−${Math.round(v)} %`, label: 'de pénibilité estimée avec 10 déplacements', tone: 'ok' },
+        { value: expired.length, format: v => `${Math.round(v)}`, label: 'emplacements libérables en sortant les périmés', tone: 'bad' },
+      ]} />
 
       <div className="filters">
         <fieldset><legend className="label">Couleur</legend><div className="seg"><button type="button" aria-pressed={mode === 'rotation'} onClick={() => setMode('rotation')}>Rotation (ABC)</button><button type="button" aria-pressed={mode === 'peremption'} onClick={() => setMode('peremption')}>Péremption</button></div></fieldset>

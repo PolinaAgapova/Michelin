@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DATA, days, indexes, lifecycle, qualityChecks } from '../data/lab';
 import { fmt, pct } from './charts';
+import { Stats } from './Hero';
 
 const LANES = ['Laboratoire demandeur', 'Atelier mélange', 'Magasin', 'Laboratoires utilisateurs', 'Fin de vie'];
 interface Step { id: string; title: string; lane: number; x: number; metric: string; tone: 'ok' | 'warn' | 'bad'; data: string[]; frictions: string[]; ideas: { t: string; to?: string }[] }
@@ -74,7 +75,7 @@ export function Flux() {
 
   return (
     <>
-      <div className="ph">
+      <div className="ph" data-n="01">
         <div>
           <div className="kicker">Mission 01 · Analyser et cartographier les flux</div>
           <h1>Le cycle de vie d’un mélange, de la commande à la fin de vie</h1>
@@ -82,6 +83,12 @@ export function Flux() {
         </div>
         <span className="hypo">Cartographie hypothétique · à confronter aux observations terrain</span>
       </div>
+      <Stats items={[
+        { value: lc.firstUseDays, format: v => `${Math.round(v)} j`, label: 'entre le rangement et le premier prélèvement' },
+        { value: lc.neverUsed, format: v => `${Math.round(v)}`, label: 'lots jamais prélevés', tone: 'warn' },
+        { value: lc.expiryRate * 100, format: v => `${Math.round(v)} %`, label: 'des lots terminés finissent périmés', tone: 'bad' },
+        { value: avgAge, format: v => `${Math.round(v)} j`, label: 'durée de vie réelle d’un lot terminé', tone: 'ok' },
+      ]} />
       <section className="panel flow-wrap">
         <svg className="chart flow" viewBox={`0 0 ${W} ${T + LANES.length * LH + 10}`} role="group" aria-label="Cartographie des flux par acteur" style={{ minWidth: 900 }}>
           <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)" /></marker></defs>

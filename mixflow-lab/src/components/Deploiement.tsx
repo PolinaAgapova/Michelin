@@ -22,7 +22,7 @@ export function Deploiement() {
   ];
   return (
     <>
-      <div className="ph">
+      <div className="ph" data-n="05">
         <div>
           <div className="kicker">Mission 05 · Déployer, communiquer, former</div>
           <h1>Un outil ne sert à rien si personne ne l’utilise</h1>
@@ -30,6 +30,9 @@ export function Deploiement() {
         </div>
         <span className="hypo">Proposition à ajuster avec le tuteur</span>
       </div>
+      <ol className="roadmap" aria-label="Frise des six mois">
+        {PLAN.map((p, i) => <li key={p.m} style={{ animationDelay: `${.25 + i * .18}s` }}><span className="rm-dot" /><b>{p.m}</b><span>{p.t}</span></li>)}
+      </ol>
       <div className="grid3">
         {PLAN.map((p, i) => (
           <section key={p.m} className="panel">

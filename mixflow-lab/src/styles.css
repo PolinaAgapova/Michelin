@@ -432,3 +432,48 @@ main.page > *:nth-child(2) { animation-delay: .06s; } main.page > *:nth-child(3)
 .mission em { position: absolute; right: 14px; bottom: 10px; font-style: normal; color: var(--data); transition: transform .25s; }
 .mission:hover em { transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) { .sk-flow { animation: none; } main.page > * { animation: none; } }
+
+/* ---- en-têtes de section : grand numéro de mission en filigrane ---- */
+.ph[data-n] { position: relative; padding-top: 6px; }
+.ph[data-n]::before { content: attr(data-n); position: absolute; right: 0; top: -34px; font: 700 clamp(90px, 13vw, 170px)/1 var(--display); color: transparent; -webkit-text-stroke: 1px rgba(79,193,179,.16); letter-spacing: -.04em; pointer-events: none; z-index: -1; }
+.ph[data-n] .hypo { position: relative; }
+@media (max-width: 700px) { .ph[data-n]::before { top: -16px; font-size: 86px; } }
+
+/* ---- bandeau de chiffres clés ---- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin: 0 0 18px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,.07); background: linear-gradient(90deg, rgba(79,193,179,.08), rgba(255,255,255,.01) 60%), var(--panel); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.stat { display: grid; gap: 4px; padding: 16px 20px; border-left: 1px solid rgba(255,255,255,.06); }
+.stat:first-child { border-left: 0; }
+.sv { font: 600 clamp(28px, 3vw, 38px)/1 var(--display); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.sl { font-size: 13px; color: var(--ink-2); line-height: 1.35; }
+.t-data .sv { color: var(--data); } .t-warn .sv { color: var(--amber); } .t-bad .sv { color: var(--bad); } .t-ok .sv { color: var(--good); }
+@media (max-width: 560px) { .stats { grid-template-columns: 1fr 1fr; } .stat { border-top: 1px solid rgba(255,255,255,.06); padding: 14px; } .stat:nth-child(odd) { border-left: 0; } }
+
+/* ---- jauge de fiabilité ---- */
+.gauge { display: flex; align-items: center; gap: 14px; }
+.gauge svg { width: 96px; height: 96px; flex: none; }
+.g-track { fill: none; stroke: rgba(255,255,255,.07); stroke-width: 9; }
+.g-val { fill: none; stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(242,179,61,.35)); }
+.g-num { font: 600 28px var(--display); fill: var(--ink); }
+.g-pc { font-size: 14px; fill: var(--ink-3); }
+.gauge svg { width: 84px; height: 84px; }
+@media (max-width: 700px) { .gauge-kpi { grid-column: 1 / -1; } }
+
+/* ---- frise du déploiement ---- */
+.roadmap { list-style: none; margin: 0 0 18px; padding: 22px 8px 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); position: relative; }
+.roadmap::before { content: ""; position: absolute; left: 8.3%; right: 8.3%; top: 28px; height: 2px; background: linear-gradient(90deg, var(--data), var(--amber) 60%, var(--good)); transform-origin: left; animation: rmline 1.4s .15s cubic-bezier(.2,.7,.2,1) both; }
+.roadmap li { display: grid; justify-items: center; text-align: center; gap: 2px; padding: 0 4px; animation: pagein .5s cubic-bezier(.2,.7,.2,1) both; }
+.rm-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 3px solid var(--data); box-shadow: 0 0 0 5px rgba(79,193,179,.12); margin-bottom: 8px; position: relative; }
+.roadmap li:nth-child(n+4) .rm-dot { border-color: var(--amber); box-shadow: 0 0 0 5px rgba(242,179,61,.12); }
+.roadmap li:last-child .rm-dot { border-color: var(--good); box-shadow: 0 0 0 5px rgba(87,199,132,.14); }
+.roadmap b { font: 600 17px var(--display); }
+.roadmap span:not(.rm-dot) { font-size: 12.5px; color: var(--ink-2); }
+@keyframes rmline { from { transform: scaleX(0); } }
+@media (max-width: 700px) {
+  .roadmap { grid-template-columns: 1fr; padding: 0 0 0 26px; gap: 12px; }
+  .roadmap::before { left: 6px; right: auto; top: 6px; bottom: 6px; width: 2px; height: auto; background: linear-gradient(180deg, var(--data), var(--amber) 60%, var(--good)); transform-origin: top; animation-name: rmlinev; }
+  .roadmap li { justify-items: start; text-align: left; grid-template-columns: auto 1fr; column-gap: 10px; align-items: baseline; }
+  .rm-dot { position: absolute; left: -26px; top: 4px; margin: 0; }
+  .roadmap li { position: relative; }
+}
+@keyframes rmlinev { from { transform: scaleY(0); } }
+@media (prefers-reduced-motion: reduce) { .roadmap::before, .roadmap li { animation: none; } }

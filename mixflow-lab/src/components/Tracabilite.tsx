@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { DATA, days, expiresSoon, inStock, indexes, isExpired, qualityChecks } from '../data/lab';
-import { pct } from './charts';
+import { Gauge } from './Hero';
 
 export function Tracabilite() {
   const { mel, mv } = useMemo(() => indexes(DATA), []);
@@ -20,7 +20,7 @@ export function Tracabilite() {
 
   return (
     <>
-      <div className="ph">
+      <div className="ph" data-n="04">
         <div>
           <div className="kicker">Mission 04 · Traçabilité sur tout le cycle de vie</div>
           <h1>Retrouver n’importe quel lot, et savoir si l’on peut s’y fier</h1>
@@ -29,7 +29,7 @@ export function Tracabilite() {
       </div>
 
       <div className="kpis">
-        <div className={`kpi ${clean / stockLots.length < .9 ? 'warn' : 'ok'}`}><span className="label">Fiabilité du stock</span><span className="v">{pct(clean / stockLots.length)}</span><span className="d">{clean} lots sur {stockLots.length} sans anomalie</span></div>
+        <div className="kpi gauge-kpi"><Gauge share={clean / stockLots.length} label="Fiabilité du stock" sub={`${clean} lots sur ${stockLots.length} sans aucune anomalie`} tone={clean / stockLots.length < .9 ? 'var(--amber)' : 'var(--good)'} /></div>
         {groups.slice(0, 3).map(g => <div key={g.r} className={`kpi ${g.items[0].severity === 'haute' ? 'bad' : 'warn'}`}><span className="label">{g.r}</span><span className="v">{g.items.length}</span></div>)}
       </div>
 

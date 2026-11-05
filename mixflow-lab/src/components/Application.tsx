@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Stats } from './Hero';
 import { DATA, expiresSoon, inStock, isExpired, type Lot, type Mouvement } from '../data/lab';
 import { AppShowcase } from './AppShowcase';
 
@@ -55,7 +56,7 @@ export function Application() {
 
   return (
     <>
-      <div className="ph">
+      <div className="ph" data-n="03">
         <div>
           <div className="kicker">Mission 03 · Digitaliser la gestion des stocks</div>
           <h1>Deux gestes pour tracer un prélèvement : scanner, saisir</h1>
@@ -63,6 +64,11 @@ export function Application() {
         </div>
         <span className="hypo">Démonstration : les modifications ne sont pas enregistrées</span>
       </div>
+      <Stats items={[
+        { value: 2, format: v => `${Math.round(v)}`, label: 'gestes pour déclarer un prélèvement : scanner, saisir' },
+        { value: 63, format: v => `${Math.round(v)}`, label: 'étiquettes QR générées pour les lots en stock', tone: 'ok' },
+        { value: expiredCount, format: v => `${Math.round(v)}`, label: 'alertes de péremption visibles dès l’écran d’accueil', tone: 'bad' },
+      ]} />
       <AppShowcase />
       <h2 className="label" style={{ margin: '28px 0 12px' }}>À vous d’essayer : le prototype cliquable</h2>
       <div className="proto">
